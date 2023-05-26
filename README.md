@@ -105,7 +105,7 @@ Leader key: `Space`.
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder. |
 | [telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim) | Extension for telescope. Allows fzf-like syntax in search queries. |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Configures treesitter parsers. Provides modules to manipulate code. |
-| [lsp-zero.nvim](https://github.com/VonHeikemen/lsp-zero.nvim) | Bundles some of the boilerplate code necessary to configure nvim-lspconfig and nvim-cmp. |
+| [lsp-zero.nvim](https://github.com/VonHeikemen/lsp-zero.nvim) | Bundles the boilerplate code needed to configure lspconfig and nvim-cmp. |
 | [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | Quickstart configs for Neovim's LSP client.  |
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Autocompletion engine. |
 | [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) | nvim-cmp source. Show suggestions based on LSP servers queries. |
