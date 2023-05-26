@@ -1,6 +1,6 @@
 # Neovim Starter
 
-Lightweight configuration focused on providing "basic needs" with little boilerplace. It includes better syntax highlight with `treesitter`, `telescope` as a fuzzy finder and a ready made LSP setup with autocompletion.
+Lightweight configuration focused on providing "basic needs" with little boilerplate. It includes better syntax highlight, a fuzzy finder and a ready made LSP setup with autocompletion.
 
 ## Requirements
 
