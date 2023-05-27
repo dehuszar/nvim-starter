@@ -74,6 +74,7 @@ vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 30
 
 -- Toggle file explorer
+-- See :help netrw-browse-maps
 vim.keymap.set('n', '<leader>e', '<cmd>Lexplore<cr>')
 
 -- Open file explorer in current folder
