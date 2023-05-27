@@ -70,6 +70,8 @@ Leader key: `Space`.
 | Normal | `gl` | Show diagnostics in a floating window. |
 | Normal | `[d` | Move to the previous diagnostic. |
 | Normal | `]d` | Move to the next diagnostic. |
+| Normal | `<leader>e` | Toggle file explorer. |
+| Normal | `<leader>E` | Open file explorer in current folder. |
 | Normal | `<leader>bc` | Close current buffer and preserve window layout. |
 | Normal | `<leader>?` | Search oldfiles history. |
 | Normal | `<leader><space>` | Search open buffers. |

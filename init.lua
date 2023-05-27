@@ -15,7 +15,6 @@ vim.opt.signcolumn = 'yes'
 -- Space as leader key
 vim.g.mapleader = ' '
 
-
 -- ========================================================================== --
 -- ==                               PLUGINS                                == --
 -- ========================================================================== --
@@ -70,6 +69,15 @@ lazy.setup({
 -- ========================================================================== --
 
 vim.cmd.colorscheme('tokyonight')
+
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 30
+
+-- Toggle file explorer
+vim.keymap.set('n', '<leader>e', '<cmd>Lexplore<cr>')
+
+-- Open file explorer in current folder
+vim.keymap.set('n', '<leader>E', '<cmd>Lexplore %:p:h<cr>')
 
 -- See :help lualine.txt
 require('lualine').setup({
