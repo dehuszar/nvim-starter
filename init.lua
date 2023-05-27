@@ -56,6 +56,7 @@ lazy.setup({
   {'nvim-telescope/telescope-fzf-native.nvim', build = 'make'},
   {'echasnovski/mini.comment', branch = 'stable'},
   {'echasnovski/mini.surround', branch = 'stable'},
+  {'echasnovski/mini.bufremove', branch = 'stable'},
   {'VonHeikemen/lsp-zero.nvim', branch = 'v2.x'},
   {'neovim/nvim-lspconfig'},
   {'hrsh7th/nvim-cmp'},
@@ -94,6 +95,11 @@ require('mini.comment').setup({})
 -- See :help MiniSurround.config
 require('mini.surround').setup({})
 
+-- See :help MiniBufremove.config
+require('mini.bufremove').setup({})
+
+vim.keymap.set('n', '<leader>bc', '<cmd>lua pcall(MiniBufremove.delete)<cr>')
+
 -- See :help telescope.builtin
 vim.keymap.set('n', '<leader>?', '<cmd>Telescope oldfiles<cr>')
 vim.keymap.set('n', '<leader><space>', '<cmd>Telescope buffers<cr>')
@@ -126,7 +132,7 @@ cmp.setup({
   }
 })
 
--- lsp-zero will "integrate" lspconfig and cmp for you
+-- lsp-zero will integrate lspconfig and cmp for you
 -- If you wish to do that manually, see the code here: 
 -- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/lsp.md#introduction
 local lsp_zero = require('lsp-zero')

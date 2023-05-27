@@ -70,6 +70,7 @@ Leader key: `Space`.
 | Normal | `gl` | Show diagnostics in a floating window. |
 | Normal | `[d` | Move to the previous diagnostic. |
 | Normal | `]d` | Move to the next diagnostic. |
+| Normal | `<leader>bc` | Close current buffer and preserve window layout. |
 | Normal | `<leader>?` | Search oldfiles history. |
 | Normal | `<leader><space>` | Search open buffers. |
 | Normal | `<leader>ff` | Find file in current working directory. |
@@ -100,7 +101,8 @@ Leader key: `Space`.
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | Collection of colorscheme for Neovim. |
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Pretty statusline. |
 | [mini.comment](https://github.com/echasnovski/mini.comment) | Toggle comments. |
-| [mini.surround](https://github.com/echasnovski/mini.surround) | Add, replace, delete surroundings (like pair of parenthesis, quotes, etc).  |
+| [mini.surround](https://github.com/echasnovski/mini.surround) | Add, replace, delete surroundings (like pair of parenthesis, quotes, etc). |
+| [mini.bufremove](https://github.com/echasnovski/mini.bufremove) | Remove buffers while preserving window layout. |
 | [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | Collection of lua modules. It helps plugin authors solve common problems. |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder. |
 | [telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim) | Extension for telescope. Allows fzf-like syntax in search queries. |
