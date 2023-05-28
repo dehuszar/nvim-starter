@@ -60,6 +60,7 @@ lazy.setup({
   {'neovim/nvim-lspconfig'},
   {'hrsh7th/nvim-cmp'},
   {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/cmp-buffer'},
   {'L3MON4D3/LuaSnip'},
 })
 
@@ -132,6 +133,7 @@ cmp_lsp.extend()
 cmp.setup({
   sources = {
     {name = 'nvim_lsp'},
+    {name = 'buffer'},
   },
   mapping = {
     ['<CR>'] = cmp.mapping.confirm({select = false}),

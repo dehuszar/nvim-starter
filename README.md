@@ -125,5 +125,6 @@ Leader key: `Space`.
 | [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | Quickstart configs for Neovim's LSP client.  |
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Autocompletion engine. |
 | [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) | nvim-cmp source. Show suggestions based on LSP servers queries. |
+| [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) | nvim-cmp source. Suggest words in the current buffer. |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) | Snippet engine. |
 
