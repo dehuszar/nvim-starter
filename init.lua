@@ -15,6 +15,10 @@ vim.opt.signcolumn = 'yes'
 -- Space as leader key
 vim.g.mapleader = ' '
 
+-- Basic clipboard interaction
+vim.keymap.set({'n', 'x', 'o'}, 'cp', '"+y')
+vim.keymap.set({'n', 'x', 'o'}, 'cv', '"+p')
+
 -- ========================================================================== --
 -- ==                               PLUGINS                                == --
 -- ========================================================================== --
