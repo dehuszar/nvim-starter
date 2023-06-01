@@ -39,6 +39,18 @@ Your plugins will be installed in a separate directory from your configuration. 
 nvim --headless -c 'echo stdpath("data") . "/lazy/lazy.nvim" | quit'
 ```
 
+## Learn the basics of lua and Neovim's api
+
+This configuration was created using a scripting language called `lua`, I highly recommend that you learn the syntax of this language. Learn just enough to know what is valid. Here are a couple resources:
+
+* [Learn lua in Y minutes](https://learnxinyminutes.com/docs/lua/) 
+* [Lua crash course (video)](https://www.youtube.com/watch?v=NneB6GX1Els)
+
+Next step is to get familiar with Neovim's lua api, so you can create your own keybindings and commands. Here are a couple of guides you can read:
+
+* [Build your first Neovim configuration in lua](https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/) 
+* [Neovim's official lua guide](https://neovim.io/doc/user/lua-guide.html)
+
 ## About LSP servers
 
 They are external programs that provide IDE-like features to Neovim. You need to install them manually. Go to nvim-lspconfig's documenation, in [server_configuration.md](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md) you'll find links and instruction on how to install all the supported LSP servers.
