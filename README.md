@@ -81,8 +81,8 @@ Leader key: `Space`.
 
 | Mode | Key | Action |
 | --- | --- | --- |
-| Normal | `cp` | Copy text to clipboard. |
-| Normal | `cv` | Paste text from clipboard. |
+| Normal | `gy` | Copy text to clipboard. |
+| Normal | `gp` | Paste text from clipboard. |
 | Normal | `K` | Displays hover information about the symbol under the cursor. |
 | Normal | `gd` | Jump to the definition. |
 | Normal | `gD` | Jump to declaration. |

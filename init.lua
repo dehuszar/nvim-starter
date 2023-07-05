@@ -16,8 +16,8 @@ vim.opt.signcolumn = 'yes'
 vim.g.mapleader = ' '
 
 -- Basic clipboard interaction
-vim.keymap.set({'n', 'x', 'o'}, 'cp', '"+y')
-vim.keymap.set({'n', 'x', 'o'}, 'cv', '"+p')
+vim.keymap.set({'n', 'x', 'o'}, 'gy', '"+y') -- copy
+vim.keymap.set({'n', 'x', 'o'}, 'gp', '"+p') -- paste
 
 -- ========================================================================== --
 -- ==                               PLUGINS                                == --
