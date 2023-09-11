@@ -10,7 +10,6 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.showmode = false
 vim.opt.termguicolors = true
-vim.opt.signcolumn = 'yes'
 
 -- Space as leader key
 vim.g.mapleader = ' '
@@ -60,7 +59,7 @@ lazy.setup({
   {'echasnovski/mini.comment', branch = 'stable'},
   {'echasnovski/mini.surround', branch = 'stable'},
   {'echasnovski/mini.bufremove', branch = 'stable'},
-  {'VonHeikemen/lsp-zero.nvim', branch = 'v2.x'},
+  {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
   {'neovim/nvim-lspconfig'},
   {'hrsh7th/nvim-cmp'},
   {'hrsh7th/cmp-nvim-lsp'},
@@ -124,32 +123,9 @@ vim.keymap.set('n', '<leader>fs', '<cmd>Telescope current_buffer_fuzzy_find<cr>'
 
 require('telescope').load_extension('fzf')
 
-local cmp = require('cmp')
-local cmp_lsp = require('lsp-zero.cmp')
-local cmp_action = cmp_lsp.action()
-
--- This provides the basic config for nvim-cmp. See the full config here: 
--- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/autocomplete.md#introduction
--- use `cmp.setup()` to customize the behaviour of the autocompletion
-cmp_lsp.extend()
-
--- See :help cmp-config
-cmp.setup({
-  sources = {
-    {name = 'nvim_lsp'},
-    {name = 'buffer'},
-  },
-  mapping = {
-    ['<CR>'] = cmp.mapping.confirm({select = false}),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-f>'] = cmp_action.luasnip_jump_forward(),
-    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
-  }
-})
-
 -- lsp-zero will integrate lspconfig and cmp for you
 -- If you wish to do that manually, see the code here: 
--- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v2.x/doc/md/lsp.md#introduction
+-- https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/lsp.md#how-does-it-work
 local lsp_zero = require('lsp-zero')
 
 lsp_zero.on_attach(function(client, bufnr)
@@ -161,4 +137,24 @@ end)
 -- require('lspconfig').tsserver.setup({})
 -- require('lspconfig').eslint.setup({})
 -- require('lspconfig').rust_analyzer.setup({})
+
+local cmp = require('cmp')
+local cmp_action = lsp_zero.cmp_action()
+
+-- See :help cmp-config
+cmp.setup({
+  sources = {
+    {name = 'nvim_lsp'},
+    {name = 'buffer'},
+  },
+  formatting = lsp_zero.cmp_format(),
+  mapping = cmp.mapping.preset.insert({
+    ['<CR>'] = cmp.mapping.confirm({select = false}),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-f>'] = cmp_action.luasnip_jump_forward(),
+    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
+  })
+})
 
