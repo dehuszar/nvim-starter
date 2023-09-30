@@ -61,7 +61,7 @@ function M.set_separator()
     vim.api.nvim_set_hl(0, active_tab_highlight, {link = 'Directory'})
   end
 
-  separator_active = sring.format('%%#%s#▍', active_tab_highlight)
+  separator_active = string.format('%%#%s#▍', active_tab_highlight)
 end
 
 function M.higroups()
