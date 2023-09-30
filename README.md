@@ -1,44 +1,62 @@
 # Neovim Starter
 
-## Configurations
+Neovim configuration without third party plugins.
 
-* [00-minimal](https://github.com/VonHeikemen/nvim-starter/tree/00-minimal): Small configuration without third party plugins.
-* [01-base](https://github.com/VonHeikemen/nvim-starter/tree/01-base): Small configuration that includes a plugin manager. It can provide a good base to start your own configuration.
-* [02-opinionated](https://github.com/VonHeikemen/nvim-starter/tree/02-opinionated): Opinionated configuration. It includes a combination of popular plugins. For the people who are looking to make Neovim their main editor but don't want to start from scratch. Plugins related to "code intellisense" are not included in this config.
-* [03-lsp](https://github.com/VonHeikemen/nvim-starter/tree/03-lsp): Example configuration showing how to configure the built-in LSP client with autocompletion. It is based on `02-opinionated`.
-* [04-lsp-installer](https://github.com/VonHeikemen/nvim-starter/tree/04-lsp-installer): Same as `03-lsp` but uses [mason.nvim](https://github.com/williamboman/mason.nvim) to install language servers.
-* [05-modular](https://github.com/VonHeikemen/nvim-starter/tree/05-modular): Same as `04-lsp-installer` but everything is split in modules.
+## Requirements
 
-## Other template configurations
+* Neovim v0.9 or greater.
+* git.
 
-* [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
-* [nvim-basic-ide](https://github.com/LunarVim/nvim-basic-ide)
-* [dope](https://github.com/glepnir/dope)
+## Installation
 
-## Example setups
+* Backup your existing configuration if you have one.
 
-* [basic-lsp](https://github.com/VonHeikemen/nvim-starter/tree/xx-basic-lsp): Example lua configuration showing one way to setup LSP servers without plugins.
-* [lsp-cmp](https://github.com/VonHeikemen/nvim-starter/tree/xx-lsp-cmp): Minimal setup with [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) + [nvim-cmp](https://github.com/hrsh7th/nvim-cmp).
-* [mason.nvim](https://github.com/VonHeikemen/nvim-starter/tree/xx-mason): Minimal setup with mason.nvim.
-* [light](https://github.com/VonHeikemen/nvim-starter/tree/xx-light): This setup is focused on having basic features with little boilerplate. One file with 100 lines of code.
+* If you don't know the path of the Neovim configuration folder use this command.
 
-## Learn how to configure Neovim
+```sh
+nvim --headless -c 'echo stdpath("config") | quit'
+```
 
-* [Build your first Neovim configuration in lua](https://vonheikemen.github.io/devlog/tools/build-your-first-lua-config-for-neovim/)
-* [Neovim: Plugins to get started](https://vonheikemen.github.io/devlog/tools/neovim-plugins-to-get-started/)
-* [Setup nvim-lspconfig + nvim-cmp](https://vonheikemen.github.io/devlog/tools/setup-nvim-lspconfig-plus-nvim-cmp/)
-* [Move from init.vim to init.lua](https://vonheikemen.github.io/devlog/tools/configuring-neovim-using-lua/)
-* [nvim-lua-guide](https://github.com/nanotee/nvim-lua-guide)
+* Now clone this repository in that location.
 
-## Videos
+```sh
+git clone --branch xx-user-plugins https://github.com/VonHeikemen/nvim-starter /tmp/nvim-config-path
+```
 
-* [Opinionated setup guide (for mac or linux)](https://www.youtube.com/watch?v=vdn_pKJUda8)
-* [Neovim Builtin LSP Setup Guide](https://www.youtube.com/watch?v=puWgHa7k3SY) 
-* [Debugging in Neovim](https://www.youtube.com/watch?v=0moS8UHupGc)
-* [Vim As Your Editor - Introduction](https://www.youtube.com/watch?v=X6AR2RMB5tE) 
-* [Vim As Your Editor - Horizontal Movements](https://youtu.be/5JGVtttuDQA) 
-* [Vim As Your Editor - Vertical Movements](https://www.youtube.com/watch?v=KfENDDEpCsI) 
-* [Mastering The Macro Machine - Vimconf.live 2021](https://www.youtube.com/watch?v=ZMA6MghrpWM) 
-* [Neovim lua plugin from scratch](https://www.youtube.com/watch?v=n4Lp4cV8YR0)
-* [Neovim - Rust IDE](https://www.youtube.com/watch?v=gfQ6Ae4lvL0)
-* [Neovim - Setting up a Java IDE](https://www.youtube.com/watch?v=0q_MKUynUck)
+> Do not execute this command as is. Replace `/tmp/nvim-config-path` with the correct path from the previous step.
+
+## Keybindings
+
+Leader key: `Space`.
+
+| Mode | Key | Action |
+| --- | --- | --- |
+| Normal | `gy` | Copy text to clipboard. |
+| Normal | `gp` | Paste text from clipboard. |
+| Normal | `K` | Displays hover information about the symbol under the cursor. |
+| Normal | `gd` | Jump to the definition. |
+| Normal | `gD` | Jump to declaration. |
+| Normal | `gi` | Lists all the implementations for the symbol under the cursor. |
+| Normal | `go` | Jumps to the definition of the type symbol |
+| Normal | `gr` | Lists all the references. |
+| Normal | `gs` | Displays a function's signature information. |
+| Normal | `<F2>` | Renames all references to the symbol under the cursor. |
+| Normal | `<F3>` | Format code in current buffer. |
+| Normal | `<F4>` | Selects a code action available at the current cursor position. |
+| Normal | `gl` | Show diagnostics in a floating window. |
+| Normal | `[d` | Move to the previous diagnostic. |
+| Normal | `]d` | Move to the next diagnostic. |
+| Normal | `<leader>e` | Toggle file explorer. |
+| Normal | `<leader>E` | Open file explorer in current folder. |
+
+### Autocomplete keybindings
+
+| Mode | Key | Action |
+| --- | --- | --- |
+| Insert | `<Ctrl-y>` | Confirm completion item. |
+| Insert | `<Enter>` | Confirm completion item. |
+| Insert | `<Ctrl-e>` | Cancel completion. |
+| Insert | `<Ctrl-p>` | Move to previous item. |
+| Insert | `<Ctrl-n>` | Move to next item. |
+| Insert | `<Tab>` | Trigger completion menu. Move to next item if completion menu is visible. Otherwise, insert a tab character. |
+
