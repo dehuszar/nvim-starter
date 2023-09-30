@@ -12,6 +12,8 @@ vim.opt.breakindent = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = false
+vim.opt.cursorline = true
+vim.opt.scrolloff = 2
 
 -- Augroup for user created autocommands
 vim.api.nvim_create_augroup('user_cmds', {clear = true})
@@ -23,13 +25,11 @@ vim.api.nvim_create_augroup('user_cmds', {clear = true})
 
 vim.api.nvim_create_user_command('ReloadConfig', 'source $MYVIMRC', {})
 
-local group = vim.api.nvim_create_augroup('user_cmds', {clear = true})
-
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = 'user_cmds',
   desc = 'Highlight on yank',
   callback = function()
-    vim.highlight.on_yank({higroup = 'Visual', timeout = 200})
+    vim.highlight.on_yank({higroup = 'Visual', timeout = 80})
   end,
 })
 
