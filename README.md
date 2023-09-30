@@ -46,6 +46,13 @@ Leader key: `Space`.
 | Normal | `gl` | Show diagnostics in a floating window. |
 | Normal | `[d` | Move to the previous diagnostic. |
 | Normal | `]d` | Move to the next diagnostic. |
+| Normal | `<leader>h` | Go to first non empty character in line. |
+| Normal | `<leader>l` | Go to last non empty character in line. |
+| Normal | `<leader>a` | Select all text. |
+| Normal | `<leader>w` | Save file. |
+| Normal | `<leader>bq` | Close current buffer. |
+| Normal | `<leader>bl` | Go to last active buffer. |
+| Normal | `<leader><space>` | Search open buffers. |
 | Normal | `<leader>e` | Toggle file explorer. |
 | Normal | `<leader>E` | Open file explorer in current folder. |
 

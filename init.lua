@@ -59,6 +59,7 @@ vim.keymap.set('', '<Leader>l', 'g_')
 
 -- Whatever you delete, make it go away
 vim.keymap.set({'n', 'x'}, 'x', '"_x')
+vim.keymap.set({'n', 'x'}, 'X', '"_d')
 
 -- Select all text
 vim.keymap.set('n', '<leader>a', '<cmd>keepjumps normal! ggVG<cr>')
@@ -71,6 +72,9 @@ vim.keymap.set('n', '<Leader>qq', '<cmd>quitall<cr>')
 
 -- Force quit
 vim.keymap.set('n', '<Leader>Q', '<cmd>quitall!<cr>')
+
+-- Search open buffers
+vim.keymap.set('n', '<Leader><space>', '<cmd>ls<cr>:buffer ')
 
 -- Close buffer
 vim.keymap.set('n', '<Leader>bc', '<cmd>bdelete<cr>')
