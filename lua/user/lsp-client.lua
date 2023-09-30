@@ -1,3 +1,4 @@
+local M = {}
 local lsp_cmds = vim.api.nvim_create_augroup('lsp_cmds', {clear = true})
 
 function M.new_client(opts)
