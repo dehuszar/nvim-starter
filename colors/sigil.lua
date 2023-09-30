@@ -51,7 +51,7 @@ if vim.fn.exists('syntax_on') then
 end
 
 vim.opt.background = 'dark'
-vim.g.colors_name = 'test'
+vim.g.colors_name = 'sigil'
 
 local hi_none   = 'UserColorNone'
 local hi_normal = 'UserColorNormal'
