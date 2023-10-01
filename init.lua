@@ -17,6 +17,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 vim.opt.path = {'.', '', '**'}
+vim.opt.wildignore = {'**/node_modules/**', '**/vendor/**'}
 
 -- Augroup for user created autocommands
 vim.api.nvim_create_augroup('user_cmds', {clear = true})
