@@ -147,6 +147,7 @@ hi('htmlEndTag',      {fg = color.orange,   bg = color.NONE})
 link('Special',     hi_normal)
 link('SpecialKey',  hi_normal)
 link('helpExample', hi_normal)
+link('netrwMarkFile', 'Search')
 
 -- UI: window
 link('FloatBorder', 'Normal')

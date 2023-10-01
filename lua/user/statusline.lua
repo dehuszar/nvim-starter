@@ -133,7 +133,9 @@ function state.mode()
 
   if higroup then
     state.mode_group = higroup
-    if state.show_diagnostic then text = show_sign(mode_name) end
+    if state.show_diagnostic then
+      text = show_sign(mode_name)
+    end
 
     return fmt(hi_pattern, higroup, text)
   end
@@ -207,12 +209,11 @@ function M.setup()
     desc = 'Clear message area',
     command = "echo ''"
   })
-  autocmd('User', {
-    pattern = 'LspAttached',
+  autocmd('LspAttach', {
     group = augroup,
-    once = true,
     desc = 'Show diagnostic sign',
     callback = function()
+      vim.b.lsp_attached = 1
       state.show_diagnostic = true
     end
   })

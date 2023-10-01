@@ -2,7 +2,6 @@
 -- ==                           EDITOR SETTINGS                            == --
 -- ========================================================================== --
 
-vim.opt.number = true
 vim.opt.mouse = 'a'
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -14,30 +13,11 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = false
 vim.opt.cursorline = true
 vim.opt.scrolloff = 2
+vim.opt.number = true
+vim.opt.relativenumber = true
 
 -- Augroup for user created autocommands
 vim.api.nvim_create_augroup('user_cmds', {clear = true})
-
-
--- ========================================================================== --
--- ==                               COMMANDS                               == --
--- ========================================================================== --
-
-vim.api.nvim_create_user_command('ReloadConfig', 'source $MYVIMRC', {})
-
-vim.api.nvim_create_autocmd('TextYankPost', {
-  group = 'user_cmds',
-  desc = 'Highlight on yank',
-  callback = function()
-    vim.highlight.on_yank({higroup = 'Visual', timeout = 80})
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = {'help', 'man'},
-  group = 'user_cmds',
-  command = 'nnoremap <buffer> q <cmd>quit<cr>'
-})
 
 
 -- ========================================================================== --
@@ -123,4 +103,28 @@ vim.api.nvim_create_autocmd('LspAttach', {
     bufmap('x', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
   end
 })
+
+
+-- ========================================================================== --
+-- ==                             USER PLUGINS                             == --
+-- ========================================================================== --
+
+vim.keymap.set('n', 'M', '<cmd>BufferNavMenu<cr>')
+vim.keymap.set('n', '<leader>m', '<cmd>BufferNavMark<cr>')
+vim.keymap.set('n', '<leader>M', '<cmd>BufferNavMark!<cr>')
+vim.keymap.set('n', '<M-1>', '<cmd>BufferNav 1<cr>')
+vim.keymap.set('n', '<M-2>', '<cmd>BufferNav 2<cr>')
+vim.keymap.set('n', '<M-3>', '<cmd>BufferNav 3<cr>')
+vim.keymap.set('n', '<M-4>', '<cmd>BufferNav 4<cr>')
+
+vim.keymap.set({'', 't', 'i'}, '<C-t>', function()
+  local direction = 'bottom'
+  local size
+  if vim.o.lines < 19 then
+    direction = 'right'
+    size = 0.4
+  end
+
+  require('user.terminal').toggle({direction = direction, size = size})
+end)
 
