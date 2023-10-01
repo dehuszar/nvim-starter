@@ -16,6 +16,8 @@ vim.opt.scrolloff = 2
 vim.opt.number = true
 vim.opt.relativenumber = true
 
+vim.opt.path = {'.', '', '**'}
+
 -- Augroup for user created autocommands
 vim.api.nvim_create_augroup('user_cmds', {clear = true})
 
