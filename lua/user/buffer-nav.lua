@@ -4,7 +4,6 @@ local uv = vim.loop or vim.uv
 
 M.window = nil
 s.empty = true
-s.mounted = false
 
 function M.setup()
   local command = vim.api.nvim_create_user_command
@@ -14,6 +13,7 @@ function M.setup()
   command('BufferNavMark', s.add_file, {bang = true})
   command('BufferNavRead', s.read_content, {nargs = 1, complete = 'file'})
   command('BufferNavSave', s.save_content, {nargs = '?', complete = 'file'})
+  command('BufferNavClose', s.close_window, {})
 end
 
 function M.show_menu()
@@ -21,12 +21,7 @@ function M.show_menu()
     M.window = s.create_window()
   end
 
-  if s.mounted then
-    M.window.show()
-  else
-    M.window.mount()
-    s.mounted = true
-  end
+  M.window.mount()
 end
 
 function s.add_file(input)
@@ -60,9 +55,6 @@ function s.add_file(input)
 
   if should_mount then
     M.window.mount()
-    s.mounted = true
-  else
-    M.window.show()
   end
 end
 
@@ -118,16 +110,10 @@ end
 function s.create_window()
   local buf_id = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_option(buf_id, 'filetype', 'BufferNav')
+  vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, {''})
 
+  local close = s.close_window
   local opts = {noremap = true, buffer = buf_id}
-
-  local close = function()
-    local id = M.window.winid
-    if id and vim.api.nvim_win_is_valid(id) then
-      vim.api.nvim_win_close(id, true)
-      M.window.winid = nil
-    end
-  end
 
   vim.keymap.set('n', '<esc>', close, opts)
   vim.keymap.set('n', 'q', close, opts)
@@ -142,6 +128,7 @@ function s.create_window()
   local autocmd = vim.api.nvim_create_autocmd
 
   autocmd('BufLeave', {buffer = buf_id, once = true, callback = close})
+  autocmd('WinLeave', {buffer = buf_id, callback = close})
 
   autocmd('VimResized', {buffer = buf_id , callback = close})
 
@@ -156,11 +143,8 @@ function s.create_window()
     end
   end
 
-  s.mounted = false
-
   return {
     bufnr = buf_id,
-    show = mount,
     mount = mount,
     hide = close,
     unmount = unmount,
@@ -189,6 +173,14 @@ function s.open_float(bufnr)
   config.col = math.ceil((width - config.width) / 2)
 
   return vim.api.nvim_open_win(bufnr, true, config)
+end
+
+function s.close_window()
+  local id = M.window.winid
+  if id and vim.api.nvim_win_is_valid(id) then
+    vim.api.nvim_win_close(id, true)
+    M.window.winid = nil
+  end
 end
 
 function s.buffer_nav(input)
