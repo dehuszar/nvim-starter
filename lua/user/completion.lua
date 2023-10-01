@@ -1,6 +1,5 @@
 local M = {}
 local s = {}
-local pattern = '[[:keyword:]]'
 
 local action = {
   omni_complete = '<C-x><C-o>',
@@ -13,7 +12,7 @@ local pumvisible = vim.fn.pumvisible
 
 function M.tab_complete()
   vim.opt.shortmess:append('c')
-  
+
   vim.keymap.set('i', '<Tab>', s.tab_fallback, {expr = true})
   vim.keymap.set('i', '<S-Tab>', s.tab_insert_or_prev, {expr = true})
 

@@ -22,9 +22,9 @@ function M.show_menu()
   end
 
   if s.mounted then
-    M.window:show()
+    M.window.show()
   else
-    M.window:mount()
+    M.window.mount()
     s.mounted = true
   end
 end
@@ -59,10 +59,10 @@ function s.add_file(input)
   end
 
   if should_mount then
-    M.window:mount()
+    M.window.mount()
     s.mounted = true
   else
-    M.window:show()
+    M.window.show()
   end
 end
 
@@ -100,7 +100,7 @@ end
 
 function M.load_content(path)
   if M.window then
-    M.window:unmount()
+    M.window.unmount()
     s.filepath = nil
   end
 
@@ -116,60 +116,79 @@ function M.load_content(path)
 end
 
 function s.create_window()
-  local Popup = require('nui.popup')
-  local position = {
-    row = '20%',
-    col = '50%',
-  }
-  local size = {
-    width = '50%',
-    height = '30%',
-  }
+  local buf_id = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_option(buf_id, 'filetype', 'BufferNav')
 
-  local window = Popup({
-    position = position,
-    size = size,
-    relative = 'editor',
-    enter = true,
-    focusable = true,
-    border = {
-      style = 'rounded',
-      text = {top = '[Buffers]'}
-    },
-    buf_options = {
-      filetype = 'BufferNav'
-    },
-    win_options = {
-      number = true,
-    },
-  })
+  local opts = {noremap = true, buffer = buf_id}
 
-  local opts = {noremap = true}
-  local close = function() window:hide() end
+  local close = function()
+    local id = M.window.winid
+    if id and vim.api.nvim_win_is_valid(id) then
+      vim.api.nvim_win_close(id, true)
+      M.window.winid = nil
+    end
+  end
 
-  window:map('n', '<esc>', close, opts)
-  window:map('n', 'q', close, opts)
-  window:map('n', '<C-c>', close, opts)
-  window:on('BufLeave', close, {once = true})
+  vim.keymap.set('n', '<esc>', close, opts)
+  vim.keymap.set('n', 'q', close, opts)
+  vim.keymap.set('n', '<C-c>', close, opts)
 
-  window:map('n', '<cr>', function()
+  vim.keymap.set('n', '<cr>', function()
     local index = vim.fn.line('.')
     close()
     M.go_to_file(index)
   end, opts)
 
-  window:on('VimResized', function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    if M.window and M.window.bufnr == bufnr then
-      close()
-    end
+  local autocmd = vim.api.nvim_create_autocmd
 
-    window:update_layout({position = position, size = size})
-  end, {})
+  autocmd('BufLeave', {buffer = buf_id, once = true, callback = close})
+
+  autocmd('VimResized', {buffer = buf_id , callback = close})
+
+  local mount = function()
+    M.window.winid = s.open_float(buf_id)
+  end
+
+  local unmount = function()
+    close()
+    if vim.api.nvim_buf_is_valid(buf_id) then
+      vim.api.nvim_buf_delete(buf_id, {force = true})
+    end
+  end
 
   s.mounted = false
 
-  return window
+  return {
+    bufnr = buf_id,
+    show = mount,
+    mount = mount,
+    hide = close,
+    unmount = unmount,
+  }
+end
+
+function s.open_float(bufnr)
+  local config = {
+    title = '[Buffers]',
+    title_pos = 'center',
+    anchor = 'NW',
+    border = 'rounded',
+    focusable = true,
+    relative = 'editor',
+    style = 'minimal',
+    zindex = 99,
+  }
+
+  local width = vim.api.nvim_get_option('columns')
+  local height = vim.api.nvim_get_option('lines')
+
+  config.height = math.ceil(height * 0.35)
+  config.width = math.ceil(width * 0.5)
+
+  config.row = math.ceil((height - config.height) / 6)
+  config.col = math.ceil((width - config.width) / 2)
+
+  return vim.api.nvim_open_win(bufnr, true, config)
 end
 
 function s.buffer_nav(input)
