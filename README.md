@@ -2,10 +2,14 @@
 
 Neovim configuration without third party plugins.
 
+What's included here? A custom colorscheme, statusline, tabline, lsp client config, session helper, terminal toggle, completion config, and file navigation helper.
+
 ## Requirements
 
 * Neovim v0.9 or greater.
 * git.
+* [lua-language-server](https://github.com/LuaLS/lua-language-server)
+* [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server)
 
 ## Installation
 
@@ -25,7 +29,7 @@ git clone --branch xx-user-plugins https://github.com/VonHeikemen/nvim-starter /
 
 > Do not execute this command as is. Replace `/tmp/nvim-config-path` with the correct path from the previous step.
 
-## Keybindings
+## Custom keybindings
 
 Leader key: `Space`.
 
@@ -33,6 +37,8 @@ Leader key: `Space`.
 | --- | --- | --- |
 | Normal | `gy` | Copy text to clipboard. |
 | Normal | `gp` | Paste text from clipboard. |
+| Normal | `x` | Delete one character without modifying internal registers. |
+| Normal | `X` | Delete text without modifying internal registers. |
 | Normal | `K` | Displays hover information about the symbol under the cursor. |
 | Normal | `gd` | Jump to the definition. |
 | Normal | `gD` | Jump to declaration. |
@@ -55,6 +61,14 @@ Leader key: `Space`.
 | Normal | `<leader><space>` | Search open buffers. |
 | Normal | `<leader>e` | Toggle file explorer. |
 | Normal | `<leader>E` | Open file explorer in current folder. |
+| Normal | `<Ctrl-t>` | Toggle embedded terminal. |
+| Normal | `<leader>m` | Include current buffer in menu. |
+| Normal | `<leader>M` | Include current buffer in menu and show the menu. |
+| Normal | `M` | Show buffer menu. |
+| Normal | `<Alt-1>` | Navigate to the file in the first line of the buffer menu. |
+| Normal | `<Alt-2>` | Navigate to the file in the second line of the buffer menu. |
+| Normal | `<Alt-3>` | Navigate to the file in the third line of the buffer menu. |
+| Normal | `<Alt-4>` | Navigate to the file in the fourth line of the buffer menu. |
 
 ### Autocomplete keybindings
 
