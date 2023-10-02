@@ -214,36 +214,36 @@ vim.g.terminal_color_foreground = theme.FG.gui
 vim.g.terminal_color_background = theme.BG.gui
 
 -- black
-vim.g.terminal_color_0  = color.black
-vim.g.terminal_color_8  = color.bright_black
+vim.g.terminal_color_0  = color.black.gui
+vim.g.terminal_color_8  = color.bright_black.gui
 
 -- red
-vim.g.terminal_color_1  = color.red
-vim.g.terminal_color_9  = color.red
+vim.g.terminal_color_1  = color.red.gui
+vim.g.terminal_color_9  = color.red.gui
 
 -- green
-vim.g.terminal_color_2  = color.green
-vim.g.terminal_color_10 = color.green
+vim.g.terminal_color_2  = color.green.gui
+vim.g.terminal_color_10 = color.green.gui
 
 -- yellow
-vim.g.terminal_color_3  = color.yellow
-vim.g.terminal_color_11 = color.yellow
+vim.g.terminal_color_3  = color.yellow.gui
+vim.g.terminal_color_11 = color.yellow.gui
 
 -- blue
-vim.g.terminal_color_4  = color.blue
-vim.g.terminal_color_12 = color.blue
+vim.g.terminal_color_4  = color.blue.gui
+vim.g.terminal_color_12 = color.blue.gui
 
 -- magenta
-vim.g.terminal_color_5  = color.magenta
-vim.g.terminal_color_13 = color.magenta
+vim.g.terminal_color_5  = color.magenta.gui
+vim.g.terminal_color_13 = color.magenta.gui
 
 -- cyan
-vim.g.terminal_color_6  = color.cyan
-vim.g.terminal_color_14 = color.cyan
+vim.g.terminal_color_6  = color.cyan.gui
+vim.g.terminal_color_14 = color.cyan.gui
 
 -- white
-vim.g.terminal_color_7  = color.white
-vim.g.terminal_color_15 = color.white
+vim.g.terminal_color_7  = color.white.gui
+vim.g.terminal_color_15 = color.white.gui
 
 
 ---
