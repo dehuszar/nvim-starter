@@ -64,6 +64,7 @@ Leader key: `Space`.
 | Normal | `<F5>` | Toggle embedded terminal. |
 | Normal | `<leader>m` | Include current buffer in menu. |
 | Normal | `<leader>M` | Include current buffer in menu and show the menu. |
+| Insert | `<C-d>` | Expand abbreviations. This is the hack I use for snippets. |
 | Normal | `M` | Show buffer menu. |
 | Normal | `<Alt-1>` | Navigate to the file in the first line of the buffer menu. |
 | Normal | `<Alt-2>` | Navigate to the file in the second line of the buffer menu. |

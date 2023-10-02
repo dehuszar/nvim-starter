@@ -120,6 +120,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- ==                             USER PLUGINS                             == --
 -- ========================================================================== --
 
+-- Expand snippets.
+-- (example: type ff then press c-d in a lua file)
+-- See: plugin/snippets.vim
+vim.keymap.set('i', '<C-d>', '@<C-]>')
+
 vim.keymap.set('n', 'M', '<cmd>BufferNavMenu<cr>')
 vim.keymap.set('n', '<leader>m', '<cmd>BufferNavMark<cr>')
 vim.keymap.set('n', '<leader>M', '<cmd>BufferNavMark!<cr>')
