@@ -1,6 +1,7 @@
 require('user.netrw').setup()
-require('user.buffer-nav').setup()
+require('user.session').setup()
 require('user.terminal').setup()
+require('user.buffer-nav').setup()
 
 vim.api.nvim_create_user_command('ReloadConfig', 'source $MYVIMRC', {})
 
