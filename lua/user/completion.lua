@@ -6,24 +6,48 @@ local action = {
   buffer_complete = '<C-x><C-n>',
   next_item = '<Down>',
   prev_item = '<Up>',
+  abort = '<C-e>',
+  insert_tab = '<Tab>',
 }
 
 local pumvisible = vim.fn.pumvisible
 vim.opt.completeopt = {'menu', 'menuone', 'noselect', 'noinsert'}
 
-function M.tab_complete()
+function M.setup(opts)
+  opts = opts or {}
   vim.opt.shortmess:append('c')
 
-  vim.keymap.set('i', '<Tab>', s.tab_fallback, {expr = true})
-  vim.keymap.set('i', '<S-Tab>', s.tab_insert_or_prev, {expr = true})
+  local trigger = opts.toggle_menu or false
+  local tabcomplete = opts.tabcomplete or false
+
+  if tabcomplete then
+    vim.keymap.set('i', '<Tab>', s.tab_fallback, {expr = true})
+    vim.keymap.set('i', '<S-Tab>', s.tab_insert_or_prev, {expr = true})
+  end
+
+  if trigger then
+    vim.keymap.set(
+      'i',
+      trigger,
+      s.toggle_menu_fallback,
+      {expr = true, remap = false}
+    )
+  end
 
   local group = vim.api.nvim_create_augroup('user_omnifunc', {clear = true})
   vim.api.nvim_create_autocmd('LspAttach', {
     group = group,
     desc = 'setup LSP omnifunc completion',
     callback = function(ev)
-      local opts = {buffer = ev.buf, expr = true}
-      vim.keymap.set('i', '<Tab>', s.tab_expr, opts)
+      local opts = {buffer = ev.buf, expr = true, remap = false}
+
+      if tabcomplete then
+        vim.keymap.set('i', '<Tab>', s.tab_expr, opts)
+      end
+
+      if trigger then
+        vim.keymap.set('i', trigger, s.toggle_menu, opts)
+      end
     end
   })
 end
@@ -33,7 +57,23 @@ function s.tab_insert_or_prev()
     return action.prev_item
   end
 
-  return '<Tab>'
+  return action.insert_tab
+end
+
+function s.toggle_menu()
+  if pumvisible() == 1 then
+    return action.abort
+  end
+
+  return action.omni_complete
+end
+
+function s.toggle_menu_fallback()
+  if pumvisible() == 1 then
+    return action.abort
+  end
+
+  return action.buffer_complete
 end
 
 function s.tab_fallback()
@@ -45,7 +85,7 @@ function s.tab_fallback()
     return action.buffer_complete
   end
 
-  return '<Tab>'
+  return action.insert_tab
 end
 
 function s.tab_expr()
@@ -57,7 +97,7 @@ function s.tab_expr()
     return action.omni_complete
   end
 
-  return '<Tab>'
+  return action.insert_tab
 end
 
 function s.has_words_before()

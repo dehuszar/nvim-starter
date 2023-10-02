@@ -6,7 +6,10 @@ vim.g.user_lsp_loaded = 1
 
 vim.opt.signcolumn = 'yes'
 
-require('user.completion').tab_complete()
+require('user.completion').setup({
+  tabcomplete = true,
+  toggle_menu = '<C-e>',
+})
 
 local lsp = require('user.lsp-client')
 

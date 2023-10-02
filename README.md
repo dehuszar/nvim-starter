@@ -77,8 +77,9 @@ Leader key: `Space`.
 | --- | --- | --- |
 | Insert | `<Ctrl-y>` | Confirm completion item. |
 | Insert | `<Enter>` | Confirm completion item. |
-| Insert | `<Ctrl-e>` | Cancel completion. |
+| Insert | `<Ctrl-e>` | Toggle completion menu. |
 | Insert | `<Ctrl-p>` | Move to previous item. |
 | Insert | `<Ctrl-n>` | Move to next item. |
-| Insert | `<Tab>` | Trigger completion menu. Move to next item if completion menu is visible. Otherwise, insert a tab character. |
+| Insert | `<Tab>` | Show completion menu if cursor is in the middle of a word. Go to next completion item if completion menu is visible. Otherwise, insert tab character. |
+| Insert | `<Shift-Tab>` | If completion menu is visible, go to previous completion item. Otherwise, insert tab character. |
 
