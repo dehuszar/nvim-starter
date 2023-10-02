@@ -61,7 +61,7 @@ Leader key: `Space`.
 | Normal | `<leader><space>` | Search open buffers. |
 | Normal | `<leader>e` | Toggle file explorer. |
 | Normal | `<leader>E` | Open file explorer in current folder. |
-| Normal | `<Ctrl-t>` | Toggle embedded terminal. |
+| Normal | `<F5>` | Toggle embedded terminal. |
 | Normal | `<leader>m` | Include current buffer in menu. |
 | Normal | `<leader>M` | Include current buffer in menu and show the menu. |
 | Normal | `M` | Show buffer menu. |

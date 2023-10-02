@@ -128,7 +128,7 @@ vim.keymap.set('n', '<M-2>', '<cmd>BufferNav 2<cr>')
 vim.keymap.set('n', '<M-3>', '<cmd>BufferNav 3<cr>')
 vim.keymap.set('n', '<M-4>', '<cmd>BufferNav 4<cr>')
 
-vim.keymap.set({'', 't', 'i'}, '<C-t>', function()
+vim.keymap.set({'', 't', 'i'}, '<F5>', function()
   local direction = 'bottom'
   local size
   if vim.o.lines < 19 then
