@@ -1,3 +1,6 @@
+" Learn about vim abbreviations feature here:
+" https://vonheikemen.github.io/devlog/tools/using-vim-abbreviations/
+
 function! s:lang_lua() abort
   iabbrev <buffer> ff@ function()<CR>end<Esc>O
   iabbrev <buffer> fun@ function Z()<CR>end<Esc>O<Esc><Up>fZa<BS>
