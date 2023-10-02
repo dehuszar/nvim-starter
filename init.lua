@@ -16,11 +16,19 @@ vim.opt.scrolloff = 2
 vim.opt.number = true
 vim.opt.relativenumber = true
 
-vim.opt.path = {'.', '', '**'}
-vim.opt.wildignore = {'**/node_modules/**', '**/vendor/**'}
-
 -- Augroup for user created autocommands
 vim.api.nvim_create_augroup('user_cmds', {clear = true})
+
+-- Execute an exrc file in the current directory.
+-- Useful for project local configurations
+-- See :help 'exrc'
+vim.opt.exrc = true
+
+-- Enable recursive search for file commands (like :find)
+vim.opt.path = {'.', '', '**'}
+
+-- Filter out the these pattern when suggesting files in command mode
+vim.opt.wildignore = {'**/node_modules/**', '**/vendor/**'}
 
 
 -- ========================================================================== --
