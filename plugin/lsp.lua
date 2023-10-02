@@ -5,11 +5,20 @@ end
 vim.g.user_lsp_loaded = 1
 
 vim.opt.signcolumn = 'yes'
-vim.opt.completeopt = {'menu', 'menuone', 'noselect', 'noinsert'}
+
+require('user.completion').tab_complete()
 
 local lsp = require('user.lsp-client')
 
-require('user.completion').tab_complete()
+lsp.ui({
+  border = 'rounded',
+  sign_icons = {
+    error = '✘',
+    warn = '▲',
+    hint = '⚑',
+    info = '»'
+  }
+})
 
 lsp.new_client({
   name = 'lua_ls',

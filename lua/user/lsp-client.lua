@@ -75,5 +75,42 @@ function M.find_first(list)
   return vim.fs.dirname(path)
 end
 
+function M.ui(opts)
+  opts = opts or {}
+  local border = opts.border
+  local icons = opts.sign_icons
+
+  if type(border) == 'string' then
+    vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+      vim.lsp.handlers.hover,
+      {border = border}
+    )
+
+    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+      vim.lsp.handlers.signature_help,
+      {border = border}
+    )
+  end
+
+  if type(icons) == 'table' then
+    local sign = function(args)
+      if args.text == nil then
+        return
+      end
+
+      vim.fn.sign_define(args.name, {
+        texthl = args.name,
+        text = args.text,
+        numhl = ''
+      })
+    end
+
+    sign({name = 'DiagnosticSignError', text = icons.error})
+    sign({name = 'DiagnosticSignWarn', text = icons.warn})
+    sign({name = 'DiagnosticSignHint', text = icons.hint})
+    sign({name = 'DiagnosticSignInfo', text = icons.info})
+  end
+end
+
 return M
 

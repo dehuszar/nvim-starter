@@ -9,6 +9,7 @@ local action = {
 }
 
 local pumvisible = vim.fn.pumvisible
+vim.opt.completeopt = {'menu', 'menuone', 'noselect', 'noinsert'}
 
 function M.tab_complete()
   vim.opt.shortmess:append('c')
