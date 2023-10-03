@@ -1,6 +1,8 @@
 local M = {}
 local s = {}
+
 local uv = vim.loop or vim.uv
+local buf_name = 'buffer-nav.ui-menu'
 
 M.window = nil
 
@@ -11,7 +13,6 @@ function M.setup()
   command('BufferNavMenu', M.show_menu, {})
   command('BufferNavMark', s.add_file, {bang = true})
   command('BufferNavRead', s.read_content, {nargs = 1, complete = 'file'})
-  command('BufferNavSave', s.save_content, {nargs = '?', complete = 'file'})
   command('BufferNavClose', s.close_window, {})
 end
 
@@ -102,7 +103,6 @@ function M.load_content(path)
   vim.api.nvim_buf_call(window.bufnr, function()
     vim.cmd.read(path)
     vim.api.nvim_buf_set_lines(window.bufnr, 0, 1, false, {})
-    vim.api.nvim_buf_set_name(window.bufnr, path)
     s.filepath = path
   end)
 
@@ -111,7 +111,10 @@ end
 
 function s.create_window()
   local buf_id = vim.api.nvim_create_buf(false, true)
+
+  vim.api.nvim_buf_set_name(buf_id, buf_name)
   vim.api.nvim_buf_set_option(buf_id, 'filetype', 'BufferNav')
+  vim.api.nvim_buf_set_option(buf_id, 'buftype', 'acwrite')
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, {''})
 
   local close = s.close_window
@@ -133,6 +136,8 @@ function s.create_window()
   autocmd('WinLeave', {buffer = buf_id, callback = close})
 
   autocmd('VimResized', {buffer = buf_id , callback = close})
+
+  autocmd('BufWriteCmd', {buffer = buf_id, callback = s.write_file})
 
   local mount = function()
     local cursorline = vim.o.cursorline
@@ -184,12 +189,46 @@ function s.open_float(bufnr)
   return vim.api.nvim_open_win(bufnr, true, config)
 end
 
+function s.write_file(ev)
+  vim.cmd.setlocal('nomodified')
+
+  local same_name = ev.file == buf_name
+  if not same_name then
+    s.filepath = ev.file
+  end
+
+  if s.filepath == nil then
+    if same_name then
+      local msg = 'Must provide a file path'
+      vim.notify(msg, vim.log.levels.WARN)
+      return
+    end
+
+    s.filepath = ev.file
+  end
+
+  vim.cmd.write({
+    args = {s.filepath},
+    bang = true,
+    mods = {
+      noautocmd = true
+    }
+  })
+end
+
 function s.close_window()
   local id = M.window.winid
-  if id and vim.api.nvim_win_is_valid(id) then
-    vim.api.nvim_win_close(id, true)
-    M.window.winid = nil
+
+  if id == nil or not vim.api.nvim_win_is_valid(id) then
+    return
   end
+
+  if vim.api.nvim_buf_get_option(M.window.bufnr, 'modified') then
+    vim.api.nvim_buf_set_option(M.window.bufnr, 'modified', false)
+  end
+
+  vim.api.nvim_win_close(id, true)
+  M.window.winid = nil
 end
 
 function s.buffer_nav(input)
@@ -208,26 +247,6 @@ function s.read_content(input)
   end
 
   M.load_content(path)
-end
-
-function s.save_content(input)
-  if vim.bo.filetype ~= 'BufferNav' then
-    return
-  end
-
-  local path = input.args
-
-  if path == '' then
-    path = s.filepath
-  end
-
-  if path == nil then
-    vim.notify('Must provide a filepath', vim.log.levels.WARN)
-    return
-  end
-
-  s.filepath = path
-  vim.cmd.write({args = {path}, bang = true})
 end
 
 return M
