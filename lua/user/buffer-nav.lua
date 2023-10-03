@@ -134,7 +134,14 @@ function s.create_window()
   autocmd('VimResized', {buffer = buf_id , callback = close})
 
   local mount = function()
-    M.window.winid = s.open_float(buf_id)
+    local cursorline = vim.o.cursorline
+    local id = s.open_float(buf_id)
+
+    M.window.winid = id
+    vim.api.nvim_buf_call(M.window.bufnr, function()
+      vim.api.nvim_win_set_option(id, 'number', true)
+      vim.api.nvim_win_set_option(id, 'cursorline', cursorline)
+    end)
   end
 
   local unmount = function()
