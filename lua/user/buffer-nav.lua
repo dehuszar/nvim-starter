@@ -3,7 +3,6 @@ local s = {}
 local uv = vim.loop or vim.uv
 
 M.window = nil
-s.empty = true
 
 function M.setup()
   local command = vim.api.nvim_create_user_command
@@ -32,11 +31,14 @@ function s.add_file(input)
     M.window = s.create_window()
   end
 
+  local get_lines = vim.api.nvim_buf_get_lines
   local start_row = vim.api.nvim_buf_line_count(M.window.bufnr)
   local end_row = start_row
 
-  if s.empty then
-    s.empty = false
+  local is_empty = start_row == 1
+    and #vim.trim(get_lines(M.window.bufnr, 0, 1, false)[1]) == 0
+
+  if is_empty then
     start_row = 0
     end_row = 1
   end
@@ -102,7 +104,6 @@ function M.load_content(path)
     vim.api.nvim_buf_set_lines(window.bufnr, 0, 1, false, {})
     vim.api.nvim_buf_set_name(window.bufnr, path)
     s.filepath = path
-    s.empty = false
   end)
 
   M.window = window
