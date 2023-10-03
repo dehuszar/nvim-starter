@@ -99,9 +99,10 @@ function M.load_content(path)
   local window = s.create_window()
   vim.api.nvim_buf_call(window.bufnr, function()
     vim.cmd.read(path)
-    s.filepath = path
     vim.api.nvim_buf_set_lines(window.bufnr, 0, 1, false, {})
     vim.api.nvim_buf_set_name(window.bufnr, path)
+    s.filepath = path
+    s.empty = false
   end)
 
   M.window = window
