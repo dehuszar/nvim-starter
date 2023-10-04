@@ -30,6 +30,10 @@ lsp.new_client({
   root_dir = function()
     return lsp.find_first({'.luarc.json'})
   end,
+  on_attach = function(client, bufnr)
+    -- enable format on save
+    lsp.buffer_autoformat(client, bufnr)
+  end,
   settings = {
     Lua = {
       -- Neovim's omnifunc doesn't support snippets

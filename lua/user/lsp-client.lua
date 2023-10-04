@@ -1,5 +1,7 @@
 local M = {}
-local lsp_cmds = vim.api.nvim_create_augroup('lsp_cmds', {clear = true})
+local augroup = vim.api.nvim_create_augroup
+local lsp_cmds = augroup('lsp_cmds', {clear = true})
+local format_cmds = augroup('lsp_autoformat_cmds', {clear = true})
 
 function M.new_client(opts)
   local setup_id
@@ -110,6 +112,42 @@ function M.ui(opts)
     sign({name = 'DiagnosticSignHint', text = icons.hint})
     sign({name = 'DiagnosticSignInfo', text = icons.info})
   end
+end
+
+function M.buffer_autoformat(client, bufnr, opts)
+  local timeout_ms = 10000
+
+  opts = opts or {}
+  client = client or {}
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  vim.api.nvim_clear_autocmds({group = format_cmds, buffer = bufnr})
+
+  local config = {
+    async = false,
+    id = client.id,
+    name = client.name,
+    bufnr = bufnr,
+    timeout_ms = opts.timeout_ms or timeout_ms,
+    formatting_options = opts.formatting_options,
+  }
+
+  local apply_format = function()
+    vim.lsp.buf.format(config)
+  end
+
+  local desc = 'Format current buffer'
+
+  if client.name then
+    desc = string.format('Format buffer with %s', client.name)
+  end
+
+  vim.api.nvim_create_autocmd('BufWritePre', {
+    group = format_id,
+    buffer = bufnr,
+    desc = desc,
+    callback = apply_format
+  })
 end
 
 return M
