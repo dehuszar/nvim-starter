@@ -27,9 +27,7 @@ lsp.new_client({
   name = 'lua_ls',
   cmd = {'lua-language-server'},
   filetypes = {'lua'},
-  root_dir = function()
-    return lsp.find_first({'.luarc.json'})
-  end,
+  root_dir = lsp.root_pattern({'.luarc.json'}),
   on_attach = function(client, bufnr)
     -- enable format on save
     lsp.buffer_autoformat(client, bufnr)
