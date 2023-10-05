@@ -3,6 +3,7 @@ local s = {}
 
 local uv = vim.loop or vim.uv
 local buf_name = 'buffer-nav.ui-menu'
+local parse_cmd = vim.api.nvim_parse_cmd ~= nil
 
 M.window = nil
 
@@ -52,6 +53,8 @@ function s.add_file(input)
     {vim.fn.fnamemodify(name, ':.')}
   )
 
+  M.window.modified(false)
+
   if input.bang == false then
     return
   end
@@ -84,12 +87,12 @@ function M.go_to_file(index)
   end
 
   if vim.fn.bufloaded(path) == 1 then
-    vim.cmd.buffer(path)
+    s.cmd('buffer', path)
     return
   end
 
   if uv.fs_stat(path) then
-    vim.cmd.edit(path)
+    s.cmd('edit', path)
   end
 end
 
@@ -101,7 +104,7 @@ function M.load_content(path)
 
   local window = s.create_window()
   vim.api.nvim_buf_call(window.bufnr, function()
-    vim.cmd.read(path)
+    s.cmd('read', path)
     vim.api.nvim_buf_set_lines(window.bufnr, 0, 1, false, {})
     s.filepath = path
   end)
@@ -157,25 +160,33 @@ function s.create_window()
     end
   end
 
+  local modified = function(arg)
+    vim.api.nvim_buf_set_option(M.window.bufnr, 'modified', arg)
+  end
+
   return {
     bufnr = buf_id,
     mount = mount,
     hide = close,
     unmount = unmount,
+    modified = modified,
   }
 end
 
 function s.open_float(bufnr)
   local config = {
-    title = '[Buffers]',
-    title_pos = 'center',
     anchor = 'NW',
     border = 'rounded',
     focusable = true,
     relative = 'editor',
     style = 'minimal',
-    zindex = 99,
+    zindex = 50,
   }
+
+  if parse_cmd then
+    config.title = '[Buffers]'
+    config.title_pos = 'center'
+  end
 
   local width = vim.api.nvim_get_option('columns')
   local height = vim.api.nvim_get_option('lines')
@@ -190,7 +201,7 @@ function s.open_float(bufnr)
 end
 
 function s.write_file(ev)
-  vim.cmd.setlocal('nomodified')
+  M.window.modified(false)
 
   local same_name = ev.file == buf_name
   if not same_name then
@@ -207,13 +218,18 @@ function s.write_file(ev)
     s.filepath = ev.file
   end
 
-  vim.cmd.write({
-    args = {s.filepath},
-    bang = true,
-    mods = {
-      noautocmd = true
-    }
-  })
+  if parse_cmd then
+    vim.cmd.write({
+      args = {s.filepath},
+      bang = true,
+      mods = {
+        noautocmd = true
+      }
+    })
+  else
+    local exec = 'noautocmd write! %s'
+    vim.cmd(exec:format(vim.fn.fnameescape(s.filepath)))
+  end
 end
 
 function s.close_window()
@@ -224,7 +240,7 @@ function s.close_window()
   end
 
   if vim.api.nvim_buf_get_option(M.window.bufnr, 'modified') then
-    vim.api.nvim_buf_set_option(M.window.bufnr, 'modified', false)
+    M.window.modified(false)
   end
 
   vim.api.nvim_win_close(id, true)
@@ -247,6 +263,19 @@ function s.read_content(input)
   end
 
   M.load_content(path)
+end
+
+function s.cmd_new(name, opts)
+  vim.cmd({cmd = name, args = {opts}})
+end
+
+function s.cmd(name, opts)
+  local exec = '%s %s'
+  vim.cmd(exec:format(name, vim.fn.fnameescape(opts)))
+end
+
+if parse_cmd then
+  s.cmd = s.cmd_new
 end
 
 return M

@@ -1,6 +1,7 @@
 local M = {}
 local s = {}
 local exec = vim.api.nvim_command
+local parse_cmd = vim.api.nvim_parse_cmd ~= nil
 
 s.current = {
   buffer = nil,
@@ -142,7 +143,24 @@ function s.make_split(opts)
     cmd.range[1] = vim.fn.float2nr(size * math.floor(vim.o.lines - 2))
   end
 
-  vim.cmd(cmd)
+  s.split_cmd(cmd)
+end
+
+local function split_fallback(args)
+  local str = 'silent keepalt %s %s%s%s'
+
+  vim.cmd(str:format(
+    args.mods.split,
+    args.range[1] or '',
+    args.mods.vertical and 'v' or '',
+    'split'
+  ))
+end
+
+if parse_cmd then
+  s.split_cmd = vim.cmd
+else
+  s.split_cmd = split_fallback
 end
 
 return M

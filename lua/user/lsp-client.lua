@@ -1,5 +1,7 @@
 local M = {}
+local user_attach
 
+local timeout_ms = 10000
 local uv = vim.uv or vim.loop
 local augroup = vim.api.nvim_create_augroup
 local lsp_cmds = augroup('lsp_cmds', {clear = true})
@@ -59,6 +61,12 @@ function M.new_client(opts)
   })
 end
 
+function M.on_attach(fn)
+  if type(fn) == 'function' then
+    user_attach = fn
+  end
+end
+
 function M.ui(opts)
   opts = opts or {}
   local border = opts.border
@@ -97,8 +105,6 @@ function M.ui(opts)
 end
 
 function M.buffer_autoformat(client, bufnr, opts)
-  local timeout_ms = 10000
-
   opts = opts or {}
   client = client or {}
   bufnr = bufnr or vim.api.nvim_get_current_buf()
@@ -209,6 +215,51 @@ function M.root_pattern(opts)
   if find == 'all' then
     return function() return M.find_all(opts) end
   end
+end
+
+function M.format_command(input)
+  local name
+  if #input.args > 0 then
+    name = input.args
+  end
+
+  vim.lsp.buf.format({async = input.bang, name = name, timeout_ms = timeout_ms})
+end
+
+---
+-- Ensure compatibility with Neovim v0.7
+---
+if vim.lsp.start then
+  vim.api.nvim_create_autocmd('LspAttach', {
+    group = lsp_cmds,
+    desc = 'LSP on_attach event',
+    callback = function(ev)
+      local id = vim.tbl_get(ev, 'data', 'client_id')
+      local client = {}
+
+      if id then
+        client = vim.lsp.get_client_by_id(id)
+      end
+
+      if user_attach then
+        user_attach(client, ev.buf)
+      end
+    end
+  })
+else
+  local compat = require('user.compat-07.lsp-client')
+  local format = require('user.compat-07.lsp-format')
+  local dir = require('user.compat-07.dir')
+
+  compat.lsp_cmds = lsp_cmds
+  format.format_cmds = format_cmds
+  M.new_client = compat.new_client
+  M.attached = compat.attached
+  M.on_attach = compat.on_attach
+  M.find_first = dir.find_first
+  M.find_all = dir.find_all
+  M.buffer_autoformat = format.buffer_autoformat
+  M.format_command = format.format_command
 end
 
 return M

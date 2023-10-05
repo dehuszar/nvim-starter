@@ -35,20 +35,32 @@ function M.setup(opts)
   end
 
   local group = vim.api.nvim_create_augroup('user_omnifunc', {clear = true})
-  vim.api.nvim_create_autocmd('LspAttach', {
+
+  local lsp_attach_event = 'LspAttach'
+  local lsp_attach_pattern
+
+  if vim.lsp.start == nil then
+    lsp_attach_event = 'User'
+    lsp_attach_pattern = 'LspAttached'
+  end
+
+  M.on_attach = function(ev)
+    local buf_opts = {buffer = ev.buf, expr = true, remap = false}
+
+    if tabcomplete then
+      vim.keymap.set('i', '<Tab>', s.tab_expr, buf_opts)
+    end
+
+    if trigger then
+      vim.keymap.set('i', trigger, s.toggle_menu, buf_opts)
+    end
+  end
+
+  vim.api.nvim_create_autocmd(lsp_attach_event, {
+    pattern = lsp_attach_pattern,
     group = group,
     desc = 'setup LSP omnifunc completion',
-    callback = function(ev)
-      local opts = {buffer = ev.buf, expr = true, remap = false}
-
-      if tabcomplete then
-        vim.keymap.set('i', '<Tab>', s.tab_expr, opts)
-      end
-
-      if trigger then
-        vim.keymap.set('i', trigger, s.toggle_menu, opts)
-      end
-    end
+    callback = M.on_attach,
   })
 end
 

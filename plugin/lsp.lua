@@ -23,6 +23,12 @@ lsp.ui({
   }
 })
 
+vim.api.nvim_create_user_command(
+  'LspFormat',
+  lsp.format_command,
+  {nargs = '?', bang = true, range = true}
+)
+
 lsp.new_client({
   name = 'lua_ls',
   cmd = {'lua-language-server'},

@@ -186,6 +186,14 @@ link('cssTagName',           'Function')
 link('cssColor',             'Number')
 link('cssBraces',            hi_normal)
 
+-- Treesitter (old highlight groups)
+link('TSConstructor',     hi_normal)
+link('TSVariableBuiltin', hi_normal)
+link('TSConstBuiltin',    'Number')
+link('TSFuncBuiltin',     'Function')
+link('TSKeywordFunction', hi_normal)
+link('luaTSPunctBracket', hi_normal)
+link('luaTSConstant',     hi_normal)
 
 --- Treesitter highlights
 if vim.fn.has('nvim-0.9') == 1 then

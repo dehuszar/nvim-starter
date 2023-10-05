@@ -1,4 +1,5 @@
 local M = {}
+local s = {}
 
 local augroup = vim.api.nvim_create_augroup('session_cmds', {clear = true})
 local autocmd_id
@@ -12,13 +13,19 @@ function M.setup()
   command('SessionLoad', M.load, {nargs = '?', complete = 'file'})
 end
 
+function s.mksession(path, bang)
+  local exec = 'mksession%s %s'
+  local file = vim.fn.fnameescape(path)
+  vim.cmd(exec:format(bang and '!' or '', file))
+end
+
 function M.save_current()
   local file = vim.v.this_session
   if file == '' then
     return
   end
 
-  vim.cmd.mksession({args = {file}, bang = true})
+  s.mksession(file, true)
 end
 
 function M.autosave()
@@ -48,10 +55,12 @@ function M.load(input)
   local file = vim.v.this_session
   if #file > 0 then
     -- save current session
-    vim.cmd.mksession({args = {file}, bang = true})
+    s.mksession(file, true)
   end
 
-  vim.cmd.source(path)
+  file = vim.fn.fnameescape(path)
+  local exec = 'source %s'
+  vim.cmd(exec:format(file))
   M.autosave()
 end
 
@@ -67,7 +76,7 @@ function M.create(input)
     return
   end
 
-  vim.cmd.mksession({args = {path}})
+  s.mksession(path)
   M.autosave()
 end
 
@@ -78,7 +87,10 @@ function M.session_config()
   end
 
   local path = vim.fn.fnamemodify(file, ':r')
-  vim.cmd.edit({args = {path .. 'x.vim'}})
+  file = vim.fn.fnameescape(path .. 'x.vim')
+  local exec = 'edit %s'
+
+  vim.cmd(exec:format(file))
 end
 
 return M

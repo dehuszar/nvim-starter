@@ -190,6 +190,24 @@ function M.setup()
     vim.o.statusline = pattern
   end
 
+  local lsp_attach_event = 'LspAttach'
+  local lsp_attach_pattern
+
+  if vim.lsp.start == nil then
+    lsp_attach_event = 'User'
+    lsp_attach_pattern = 'LspAttached'
+  end
+
+  autocmd(lsp_attach_event, {
+    pattern = lsp_attach_pattern,
+    group = augroup,
+    desc = 'Show diagnostic sign',
+    callback = function()
+      vim.b.lsp_attached = 1
+      state.show_diagnostic = true
+    end
+  })
+
   autocmd('ColorScheme', {
     group = augroup,
     desc = 'Apply statusline highlights',
@@ -208,14 +226,6 @@ function M.setup()
     group = augroup,
     desc = 'Clear message area',
     command = "echo ''"
-  })
-  autocmd('LspAttach', {
-    group = augroup,
-    desc = 'Show diagnostic sign',
-    callback = function()
-      vim.b.lsp_attached = 1
-      state.show_diagnostic = true
-    end
   })
   autocmd('WinEnter', {
     group = augroup,
