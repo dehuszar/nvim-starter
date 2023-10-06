@@ -4,8 +4,8 @@ function M.setup()
   -- File explorer window size
   vim.g.netrw_winsize = 30
 
-  -- Sync current directory with browsing directory
-  vim.g.netrw_keepdir = 0
+  -- Don't sync current directory with browsing directory
+  vim.g.netrw_keepdir = 1
 
   -- Hide banner
   vim.g.netrw_banner = 0
