@@ -2,7 +2,18 @@ local M = {}
 local user_attach
 
 function M.attached(client, bufnr)
+  local capabilities = client.server_capabilities
+
+  if capabilities.completionProvider then
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+  end
+
+  if capabilities.definitionProvider then
+    vim.bo[bufnr].tagfunc = 'v:lua.vim.lsp.tagfunc'
+  end
+
   vim.api.nvim_exec_autocmds('User', {pattern = 'LspAttached'})
+
   if user_attach then
     user_attach(client, bufnr)
   end
@@ -36,6 +47,8 @@ function M.new_client(opts)
   local get_root = opts.root_dir
   if type(get_root) == 'function' then
     config.root_dir = nil
+  else
+    get_root = false
   end
 
   if opts.on_exit then
