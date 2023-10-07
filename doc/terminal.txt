@@ -4,7 +4,7 @@
 Show and hide a terminal window easily.
 
 ==============================================================================
-Quickstart                                           *user-session-quickstart*
+Quickstart                                          *user-terminal-quickstart*
 
 To configure the terminal window call the .setup() function of the module
 `user.terminal`.
@@ -18,7 +18,7 @@ ToggleTerminal: ~
     Show or hide the current terminal. Or creates one if needed.
 
 ==============================================================================
-Lua API                                                     *user-session-api*
+Lua API                                                    *user-terminal-api*
 
                                                     *user-terminal.settings()*
 .settings({opts}): ~
