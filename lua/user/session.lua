@@ -7,10 +7,10 @@ local autocmd_id
 function M.setup()
   local command = vim.api.nvim_create_user_command
 
-  command('SessionSave', M.save_current, {})
-  command('SessionConfig', M.session_config, {})
-  command('SessionNew', M.create, {nargs = '?', complete = 'file'})
-  command('SessionLoad', M.load, {nargs = '?', complete = 'file'})
+  command('SessionSave', s.save_current, {})
+  command('SessionConfig', s.session_config, {})
+  command('SessionNew', s.create, {nargs = '?', complete = 'file'})
+  command('SessionLoad', s.load, {nargs = '?', complete = 'file'})
 end
 
 function s.mksession(path, bang)
@@ -19,7 +19,7 @@ function s.mksession(path, bang)
   vim.cmd(exec:format(bang and '!' or '', file))
 end
 
-function M.save_current()
+function s.save_current()
   local file = vim.v.this_session
   if file == '' then
     return
@@ -28,7 +28,7 @@ function M.save_current()
   s.mksession(file, true)
 end
 
-function M.autosave()
+function s.autosave()
   if autocmd_id then
     return
   end
@@ -36,11 +36,11 @@ function M.autosave()
   autocmd_id = vim.api.nvim_create_autocmd('VimLeavePre', {
     group = augroup,
     desc = 'Save active session on exit',
-    callback = M.save_current
+    callback = s.save_current
   })
 end
 
-function M.load(input)
+function s.load(input)
   local path = input.args
   if path == '' and vim.g.user_session_path then
     path = vim.g.user_session_path
@@ -61,10 +61,10 @@ function M.load(input)
   file = vim.fn.fnameescape(path)
   local exec = 'source %s'
   vim.cmd(exec:format(file))
-  M.autosave()
+  s.autosave()
 end
 
-function M.create(input)
+function s.create(input)
   local path = input.args
   if path == '' and vim.g.user_session_path then
     path = vim.g.user_session_path
@@ -77,10 +77,10 @@ function M.create(input)
   end
 
   s.mksession(path)
-  M.autosave()
+  s.autosave()
 end
 
-function M.session_config()
+function s.session_config()
   local file = vim.v.this_session
   if file == '' then
     return
