@@ -11,13 +11,13 @@ function M.setup()
   local command = vim.api.nvim_create_user_command
 
   command('BufferNav', s.buffer_nav, {nargs = 1})
-  command('BufferNavMenu', M.show_menu, {})
+  command('BufferNavMenu', s.show_menu, {})
   command('BufferNavMark', s.add_file, {bang = true})
-  command('BufferNavRead', s.read_content, {nargs = 1, complete = 'file'})
   command('BufferNavClose', s.close_window, {})
+  command('BufferNavRead', s.read_content, {nargs = 1, complete = 'file'})
 end
 
-function M.show_menu()
+function s.show_menu()
   if M.window == nil then
     M.window = s.create_window()
   end
@@ -64,7 +64,7 @@ function s.add_file(input)
   end
 end
 
-function M.go_to_file(index)
+function s.go_to_file(index)
   if M.window == nil then
     return
   end
@@ -96,7 +96,7 @@ function M.go_to_file(index)
   end
 end
 
-function M.load_content(path)
+function s.load_content(path)
   if M.window then
     M.window.unmount()
     s.filepath = nil
@@ -107,6 +107,7 @@ function M.load_content(path)
     s.cmd('read', path)
     vim.api.nvim_buf_set_lines(window.bufnr, 0, 1, false, {})
     s.filepath = path
+    M.window.modified(false)
   end)
 
   M.window = window
@@ -120,6 +121,8 @@ function s.create_window()
   vim.api.nvim_buf_set_option(buf_id, 'buftype', 'acwrite')
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, {''})
 
+  M.window.modified(false)
+
   local close = s.close_window
   local opts = {noremap = true, buffer = buf_id}
 
@@ -130,7 +133,7 @@ function s.create_window()
   vim.keymap.set('n', '<cr>', function()
     local index = vim.fn.line('.')
     close()
-    M.go_to_file(index)
+    s.go_to_file(index)
   end, opts)
 
   local autocmd = vim.api.nvim_create_autocmd
@@ -253,7 +256,7 @@ function s.buffer_nav(input)
     return
   end
 
-  M.go_to_file(index)
+  s.go_to_file(index)
 end
 
 function s.read_content(input)
@@ -262,7 +265,7 @@ function s.read_content(input)
     return
   end
 
-  M.load_content(path)
+  s.load_content(path)
 end
 
 function s.cmd_new(name, opts)
