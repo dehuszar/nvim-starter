@@ -28,6 +28,8 @@ function M.new_client(opts)
   local get_root = opts.root_dir
   if type(get_root) == 'function' then
     config.root_dir = nil
+  else
+    get_root = false
   end
 
   if opts.on_exit then
