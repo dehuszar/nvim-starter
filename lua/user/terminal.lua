@@ -87,12 +87,14 @@ end
 
 function M.show_terminal(opts)
   opts = opts or {}
-  if type(s.current.buffer) ~= 'number' then
-    return
-  end
 
   local direction = opts.direction or s.config.direction
   local size = opts.size or s.config.size
+
+  if type(s.current.buffer) ~= 'number' then
+    s.create_terminal(opts)
+    return
+  end
 
   s.make_split({direction = direction, size = size})
   vim.api.nvim_win_set_buf(0, s.current.buffer)
