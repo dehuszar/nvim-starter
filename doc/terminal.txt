@@ -1,0 +1,61 @@
+==============================================================================
+                                                *terminal.txt* *user-terminal*
+
+Show and hide a terminal window easily.
+
+==============================================================================
+Quickstart                                           *user-session-quickstart*
+
+To configure the terminal window call the .setup() function of the module
+`user.terminal`.
+>lua
+  require('user.terminal').setup()
+<
+==============================================================================
+Commands                                              *user-terminal-commands*
+
+ToggleTerminal: ~
+    Show or hide the current terminal. Or creates one if needed.
+
+==============================================================================
+Lua API                                                     *user-session-api*
+
+                                                    *user-terminal.settings()*
+.settings({opts}): ~
+    Update the current configuration.
+
+    {opts} supports the following properties: ~
+        - direction: ~
+          (String, Optional). Default value is 'bottom'. It can be one of
+          these: 'bottom', 'right', 'top' or 'left'
+
+        - size: ~
+          (Number). Default value is 0.25. Must be a number between 0 and 1.
+          This will determine the size of the new terminal window.
+
+                                                       *user-terminal.setup()*
+.setup({opts}): ~
+    Creates the commands and autocommands needed to manage a terminal window.
+
+    The argument {opts} supports the same properties as .settings().
+
+                                               *user-terminal.show_terminal()*
+.show_terminal({opts}): ~
+    Show the current terminal window, or creates one if needed.
+
+    The argument {opts} supports the same properties as .settings().
+
+                                               *user-terminal.hide_terminal()*
+.hide_terminal(): ~
+    Hide the current terminal window.
+
+                                                      *user-terminal.toggle()*
+.toggle({opts}): ~
+    Show or hide the current terminal. Or creates one if needed.
+
+    The argument {opts} supports the same properties as .settings().
+
+==============================================================================
+
+vim:tw=78:ft=help:norl
+

@@ -1,0 +1,96 @@
+==============================================================================
+                                            *completion.txt* *user-completion*
+
+Provides a different set of keybindings to control Neovim's built-in
+completion menu.
+
+==============================================================================
+Quick Start                                       *user-completion-quickstart*
+
+You'll need to call the .setup() function of module called `user.completion`.
+Here is quick configuration example.
+>lua
+  require('user.completion').setup({
+    lsp_omnifunc = true,
+    tabcomplete = true,
+    toggle_menu = '<C-e>',
+  })
+<
+When a language server is active in the current buffer Neovim will query the
+language server for suggestions. If there isn't a language server, Neovim will
+just suggest words in the current buffer.
+
+==============================================================================
+Lua API                                                  *user-completion-api*
+
+                                                     *user-completion.setup()*
+.setup({opts}): ~
+    Configures the keybindings to control Neovim's completion menu.
+
+    {opts} supports the following properties:
+
+        - lsp_omnifunc: ~
+          (Boolean, Optional). Defaults to `false`. When enabled the
+          completion menu will show suggestions from the active language
+          servers.
+
+        - tabcomplete: ~
+          (Boolean, Optional). Defaults to `false`. When enabled the <Tab> key
+          can be used to trigger the completion menu, if the cursor is in the
+          middle of a word. And when the completion menu is visible <Tab> will
+          select the next item in the menu. <S-Tab> will select the previous
+          item.
+
+        - toggle_menu: ~
+          (String, Optional). It should be a valid keybinding. This will be
+          used to toggle the completion menu.
+
+                                                 *user-completion.on_attach()*
+.on_attach({bufnr}): ~
+    It can be used to enable the "lsp omnifunc" in a buffer. {bufnr} needs to
+    be a valid buffer id.
+
+    You don't need to call this function when `lsp_omnifunc = true`. This is
+    only for when you want to control manually which language server can
+    enable suggestions for the completion menu. You would add this function in
+    the `on_attach` function of language server you want.
+
+    Here is an example using lua language server and json language server. In
+    lua files the LSP will provide completions. But in json files Neovim will
+    only suggest words in the current file.
+>lua
+    require('user.completion').setup({
+      lsp_omnifunc = false,
+      tabcomplete = true,
+      toggle_menu = '<C-e>',
+    })
+
+    local lsp = require('user.lsp-client')
+
+    lsp.new_client({
+      name = 'jsonls',
+      cmd = {'vscode-json-language-server', '--stdio'},
+      filetypes = {'json', 'jsonc'},
+      root_dir = lsp.root_pattern({'.git'}),
+    })
+
+    lsp.new_client({
+      name = 'lua_ls',
+      cmd = {'lua-language-server'},
+      filetypes = {'lua'},
+      root_dir = lsp.root_pattern({'.luarc.json'}),
+      on_attach = function(client, bufnr)
+        -- enable lsp completions
+        require('user.completion').on_attach(bufnr)
+      end,
+      settings = {
+        Lua = {
+          -- Neovim's omnifunc doesn't support snippets
+          completion = {keywordSnippet = 'Disable'},
+        }
+      },
+    })
+<
+==============================================================================
+
+vim:tw=78:ft=help:norl

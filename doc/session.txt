@@ -1,0 +1,64 @@
+==============================================================================
+                                                  *session.txt* *user-session*
+
+Collection of commands that help you manage the built-in session mechanism.
+
+==============================================================================
+Quickstart                                           *user-session-quickstart*
+
+To create the commands all you have to do is call the .setup() function of the
+module `user.session`.
+>lua
+  require('user.session').setup()
+<
+==============================================================================
+Commands                                               *user-session-commands*
+
+SessionNew [{path}]: ~
+    Create a new session file in {path}.
+
+    This will also setup autosave on exit. Meaning, the session file will be
+    updated to the current state before Neovim exits.
+
+SessionLoad [{path}]: ~
+    Load the session file in {path}.
+
+    Is also useful if you want to change sessions in a "safe" way. If you
+    already have a session active, it will update the state and then load the
+    new session.
+
+SessionSave: ~
+    Update the state of the current session file.
+
+SessionConfig: ~
+    Edit the configuration file for the current session.
+
+==============================================================================
+Global variables                                      *user-session-variables*
+
+                                                         *g:user_session_path*
+user_session_path: ~
+    (String) If you omit the argument {path} in `SessionNew` or `SessionLoad`
+    then `user_session_path` will be used (if it exists).
+
+Note that global variables can be set using lua and vimscript.
+
+Lua example:
+>lua
+  vim.g.user_session_path = './.git/nvim-session.vim'
+<
+Vimscript example:
+>vim
+  let g:user_session_path = './.git/nvim-session.vim'
+<
+==============================================================================
+Lua API                                                     *user-session-api*
+
+                                                        *user-session.setup()*
+.setup(): ~
+    Creates the `Session*` user commands.
+
+==============================================================================
+
+vim:tw=78:ft=help:norl
+

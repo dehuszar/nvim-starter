@@ -1,0 +1,362 @@
+==============================================================================
+                                                   *lsp-client.txt* *user-lsp*
+
+Collection of functions that implement common features and patterns used by
+many people in the community.
+
+==============================================================================
+Configure a language server                               *user-lsp-configure*
+
+To configure a language server you need to know three things:
+
+1. The command that starts the server
+2. The filetypes in which the server should be active
+3. A way to detect the "root directory" of your project
+
+What this means is that you **have to** do some research before you configure
+anything. 
+
+Once you have all that information you can use the function .new_client() from
+the module `user.lsp-client`.
+
+Here is an example configuration for the lua language server:
+>lua
+  local lsp = require('user.lsp-client')
+
+  lsp.new_client({
+    name = 'lua_ls',
+    cmd = {'lua-language-server'},
+    filetypes = {'lua'},
+    root_dir = lsp.root_pattern({'.luarc.json'}),
+  })
+<
+Where can you go to find out what configuration you need? You can start in the
+documentation of the plugin `lspconfig`.
+
+You can find a list of language servers here
+
+https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+
+And you can get the configuration in the source code, here
+
+https://github.com/neovim/nvim-lspconfig/tree/master/lua/lspconfig/server_configurations
+
+==============================================================================
+Custom keymaps                                              *user-lsp-keymaps*
+
+Once you have a language server configured and ready to go you can start
+creating the keymaps.
+
+A common convention here is to create the keymaps only when the language
+server is active in the current. To make this easier you can use the function
+.on_attach(), like this
+>lua
+  local lsp = require('user.lsp-client')
+
+  lsp.on_attach(function(client, bufnr)
+    local bufmap = function(mode, lhs, rhs)
+      vim.keymap.set(mode, lhs, rhs, {buffer = bufnr})
+    end
+
+    bufmap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
+    bufmap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
+    bufmap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
+    bufmap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
+    bufmap('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
+    bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
+    bufmap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
+
+    bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
+    bufmap({'n', 'x'}, '<F3>', '<cmd>LspFormat!<cr>')
+    bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
+  end)
+<
+If you want details about what each function can do, read their
+documentation in the help page. For example, `:help vim.lsp.buf.hover()`.
+
+==============================================================================
+Root directory                                             *user-lsp-root-dir*
+
+This is a very important concept you need to keep in mind. The "root
+directory" is basically your project folder. 
+
+When you open a file compatible with a language server, Neovim will execute
+the function `root_dir`, the one in the language server configuration. If this
+function returns a path, that will be your root directory.
+
+To make this process easy you can use the function `.root_pattern()`. This
+will search for a set of files in the current folder (your working directory)
+or any of the parent folders. If it finds them, the language server will start
+analyzing that folder.
+
+Let's say you have the lua language server installed, if you want it to detect
+the root directory of your Neovim config you can create a file called
+`.luarc.json` in the same folder your `init.lua` is located. And then you can
+configure the server this way:
+>lua
+  local lsp = require('user.lsp-client')
+
+  lsp.new_client({
+    name = 'lua_ls',
+    cmd = {'lua-language-server'},
+    filetypes = {'lua'},
+    root_dir = lsp.root_pattern({'.luarc.json'}),
+  })
+<
+You can always implement the logic `root_dir` if you need it. Assign a
+function and return a string with a path.
+>lua
+  lsp.new_client({
+    name = 'lua_ls',
+    cmd = {'lua-language-server'},
+    filetypes = {'lua'},
+    root_dir = function()
+      ---
+      -- do whatever you want here
+      ---
+    end,
+  })
+<
+==============================================================================
+Completions                                              *user-lsp-completion*
+
+To get smart completion suggestions from your language server Neovim uses
+something called omnifunc. The default keybinding for this is <C-x><C-o>, that
+is ctrl-x + ctrl-o.
+
+If you want some keymaps that feel more "intuitive" you can use the module
+`user.completion`.
+>lua
+  require('user.completion').setup({
+    lsp_omnifunc = true,
+    tabcomplete = true,
+    toggle_menu = '<C-e>',
+  })
+<
+
+For more details about this see the help page, `:help user-completion`.
+
+==============================================================================
+Format on save                                       *user-lsp-format-on-save*
+
+You can enable format on save using the function `.buffer_autoformat()`. Add
+this in the `on_attach` option of a language server.
+>lua
+  local lsp = require('user.lsp-client')
+
+  lsp.new_client({
+    name = 'lua_ls',
+    cmd = {'lua-language-server'},
+    filetypes = {'lua'},
+    root_dir = lsp.root_pattern({'.luarc.json'}),
+    on_attach = function(client, bufnr)
+      lsp.buffer_autoformat(client, bufnr)
+    end,
+  })
+<
+You could add this function in the "global" on_attach, but in that case you
+would want to ensure its active only when the language server can format.
+>lua
+  local lsp = require('user.lsp-client')
+
+  lsp.on_attach(function(client, bufnr)
+    -- make sure you use clients with formatting capabilities
+    if client.supports_method('textDocument/formatting') then
+      lsp.buffer_autoformat(client, bufnr)
+    end
+  end)
+<
+
+==============================================================================
+Lua API                                                         *user-lsp-api*
+
+                                                               *user-lsp.ui()*
+.ui({opts}): ~
+    Configures options related to Neovim's user interface.
+
+    {opts} supports the following properties:
+
+        - border: ~
+          (String, Optional). Set the style of border of diagnostic floating
+          window, hover window and signature help window. Can have one of
+          these: 'none', 'single', 'double', 'rounded', 'solid' or 'shadow'.
+
+        - sign_icons: ~
+          Defines the sign icons that appear in the gutter. It supports the
+          following properties:
+
+              - error: (String, Optional) Text for the error signs.
+
+              - warn: (String, Optional) Text for the warning signs.
+
+              - hint: (String, Optional) Text for the hint signs.
+
+              - info: (String, Optional) Text for the information signs.
+
+                                                       *user-lsp.new_client()*
+.new_client({opts}): ~
+    This will execute a user provided function to detect the root directory of
+    the project when Neovim assigns the file type for a buffer. If the root
+    directory is detected the language server will be attached to the file.
+
+    {opts} supports every property |vim.lsp.start()| supports with a few
+    changes:
+
+        - filestypes: ~
+          (String or Table) This can be any pattern the FileType autocommand
+          accepts.
+
+        - root_dir: ~
+          (Function) This will be executed after Neovim assigns the file type
+          for a buffer. If it returns a string that will be considered the
+          root directory for the project.
+
+    Other important properties are:
+
+        - cmd: ~
+          (Table) A lua table with the arguments necessary to start the
+          language server.
+
+        - name: ~
+          (String) This is the name Neovim will assign to the client object.
+
+        - on_attach: ~
+          (Function) A function that will be executed after the language
+          server gets attached to a buffer.
+
+                                                        *user-lsp.on_attach()*
+.on_attach({callback}): ~
+    Executes the {callback} function every time a language server is attached
+    to a buffer.
+
+                                                       *user-lsp.find_first()*
+.find_first({list}): ~
+    Checks the parent directories and returns the path to the first folder
+    that has a file in {list}. Useful to detect the root directory.
+
+    {list} supports the following properties:
+
+        - path: ~
+          (String, Optional) The path from where it should start looking for
+          the files in {list}.
+
+        - buffer: ~
+          (Boolean, Optional) When enabled it will use the path of the current
+          buffer.
+
+    Note: search will stop once it gets to your "HOME" folder.
+>lua
+    local lsp = require('user.lsp-client')
+
+    lsp.new_client({
+      name = 'lua_ls',
+      cmd = {'lua-language-server'},
+      filetypes = {'lua'},
+      root_dir = function()
+        --- project root will be the first directory that has
+        --- either .luarc.json or .stylua.toml
+        return lsp.find_first({'.luarc.json', '.stylua.toml'})
+      end
+    })
+<
+                                                         *user-lsp.find_all()*
+.find_all({list}): ~
+    Checks the parent directories and returns the path to the first folder
+    that has all the files in {list}. Useful to detect the root directory.
+
+    {list} supports the following properties:
+
+        - path: ~
+          (String, Optional) The path from where it should start looking for
+          the files in {list}.
+
+        - buffer: ~
+          (Boolean, Optional) When enabled use the path of the current buffer.
+
+    Note: search will stop once it gets to your "HOME" folder.
+>lua
+    local lsp = require('user.lsp-client')
+
+    lsp.new_client({
+      name = 'lua_ls',
+      cmd = {'lua-language-server'},
+      filetypes = {'lua'},
+      root_dir = function()
+        --- project root will be the first directory that has
+        --- .luarc.json and .stylua.toml
+        return lsp.find_all({'.luarc.json', '.stylua.toml'})
+      end
+    })
+<
+                                                     *user-lsp.root_pattern()*
+.root_pattern({list}): ~
+    A "shortcut" for a function that only uses .find_first() or .find_all() to
+    detect the root directory. By default it behaves like .find_first().
+
+    {list} supports the same properties .find_first() supports, and it adds
+    one options:
+
+        - find: ~
+        (String, Optional). Default value is 'first'. It can be either 'first'
+        or 'all'. It determines how the function should behave. 'first' will
+        make .root_pattern() behave like .find_first(). 'all' will make
+        .root_pattern() behave like .find_all().
+
+                                                *user-lsp.buffer_autoformat()*
+.buffer_autoformat({client}, {bufnr}, {opts}): ~
+    Format the current buffer using the active language servers.
+
+    - {client}: ~
+      (Table, Optional) if provided it must be a lua table with a `name`
+      property or an instance of |vim.lsp.client()|. If provided it will only
+      use the LSP server associated with that client.
+
+    - {bufnr}: ~
+      (Number, Optional) if provided it must be the id of an open buffer.
+
+    - {opts}: ~
+      (Table, optional). Configuration that will passed to the formatting
+      function. It supports the following properties:
+
+        - timeout_ms: (Number, optional). Time in milliseconds to block for
+          formatting requests. Defaults to `10000`.
+
+        - formatting_options: (Table, optional). Can be used to set
+          `FormattingOptions`, these options are sent to the language server.
+          See https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#formattingOptions
+
+    Tabs and indents can change after the LSP formats the code in the file. Read
+    the documentation of the LSP servers you are using, figure out how to
+    configure it to your prefered style.
+>lua
+    local lsp = require('user.lsp-client')
+
+    lsp.on_attach(function(client, bufnr)
+      if client.supports_method('textDocument/formatting') then
+        lsp.buffer_autoformat(client, bufnr)
+      end
+    end)
+<
+                                                   *user-lsp.format_command()*
+.format_command({input}): ~
+    It can be used to create a user command that formats the current buffer.
+
+    This function only exists to ensure compatibility with Neovim v0.7. If you
+    are using Neovim v0.8 it will call the built-in functions for formatting.
+    If you are using Neovim v0.7 it will call the formatting function in the
+    module `user.compat-07.lsp-format`.
+
+>lua
+  local lsp = require('user.lsp-client')
+
+  vim.api.nvim_create_user_command(
+    'LspFormat',
+    lsp.format_command,
+    {nargs = '?', bang = true, range = true}
+  )
+<
+
+==============================================================================
+
+vim:tw=78:ft=help:norl
+
