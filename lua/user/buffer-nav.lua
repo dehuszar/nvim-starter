@@ -120,8 +120,7 @@ function s.create_window()
   vim.api.nvim_buf_set_option(buf_id, 'filetype', 'BufferNav')
   vim.api.nvim_buf_set_option(buf_id, 'buftype', 'acwrite')
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, {''})
-
-  M.window.modified(false)
+  vim.api.nvim_buf_set_option(buf_id, 'modified', false)
 
   local close = s.close_window
   local opts = {noremap = true, buffer = buf_id}
