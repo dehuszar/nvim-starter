@@ -7,6 +7,7 @@ vim.g.user_lsp_loaded = 1
 vim.opt.signcolumn = 'yes'
 
 require('user.completion').setup({
+  lsp_omnifunc = true,
   tabcomplete = true,
   toggle_menu = '<C-e>',
 })

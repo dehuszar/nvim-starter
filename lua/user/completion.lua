@@ -11,30 +11,40 @@ local action = {
 }
 
 local pumvisible = vim.fn.pumvisible
-vim.opt.completeopt = {'menu', 'menuone', 'noselect', 'noinsert'}
 
 function M.setup(opts)
   opts = opts or {}
+
+  vim.opt.completeopt = {'menu', 'menuone', 'noselect', 'noinsert'}
   vim.opt.shortmess:append('c')
 
-  local trigger = opts.toggle_menu or false
-  local tabcomplete = opts.tabcomplete or false
+  s.trigger = opts.toggle_menu or false
+  s.tabcomplete = opts.tabcomplete or false
 
-  if tabcomplete then
+  local lsp_omnifunc = false
+  if type(opts.lsp_omnifunc) == 'boolean' then
+    lsp_omnifunc = opts.lsp_omnifunc
+  end
+
+  if s.tabcomplete then
     vim.keymap.set('i', '<Tab>', s.tab_fallback, {expr = true})
     vim.keymap.set('i', '<S-Tab>', s.tab_insert_or_prev, {expr = true})
   end
 
-  if trigger then
+  if s.trigger then
     vim.keymap.set(
       'i',
-      trigger,
+      s.trigger,
       s.toggle_menu_fallback,
       {expr = true, remap = false}
     )
   end
 
   local group = vim.api.nvim_create_augroup('user_omnifunc', {clear = true})
+
+  if lsp_omnifunc == false then
+    return
+  end
 
   local lsp_attach_event = 'LspAttach'
   local lsp_attach_pattern
@@ -44,24 +54,27 @@ function M.setup(opts)
     lsp_attach_pattern = 'LspAttached'
   end
 
-  M.on_attach = function(ev)
-    local buf_opts = {buffer = ev.buf, expr = true, remap = false}
-
-    if tabcomplete then
-      vim.keymap.set('i', '<Tab>', s.tab_expr, buf_opts)
-    end
-
-    if trigger then
-      vim.keymap.set('i', trigger, s.toggle_menu, buf_opts)
-    end
-  end
-
+  local on_attach = M.on_attach
   vim.api.nvim_create_autocmd(lsp_attach_event, {
     pattern = lsp_attach_pattern,
     group = group,
     desc = 'setup LSP omnifunc completion',
-    callback = M.on_attach,
+    callback = function(ev) on_attach(ev.buf) end,
   })
+end
+
+function M.on_attach(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  local buf_opts = {buffer = bufnr, expr = true, remap = false}
+
+  if s.tabcomplete then
+    vim.keymap.set('i', '<Tab>', s.tab_expr, buf_opts)
+  end
+
+  if s.trigger then
+    vim.keymap.set('i', s.trigger, s.toggle_menu, buf_opts)
+  end
 end
 
 function s.tab_insert_or_prev()
