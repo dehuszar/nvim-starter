@@ -85,3 +85,51 @@ Leader key: `Space`.
 | Insert | `<Tab>` | Show completion menu if cursor is in the middle of a word. Go to next completion item if completion menu is visible. Otherwise, insert tab character. |
 | Insert | `<Shift-Tab>` | If completion menu is visible, go to previous completion item. Otherwise, insert tab character. |
 
+## How to install third-party plugins?
+
+Turns out we only need to download them in a specific folder and Neovim will take care of the rest. We can list all the available directories using this command.
+
+```vim
+:lua vim.tbl_map(print, vim.opt.packpath:get())
+```
+
+In one of those directories we have to create a folder called `pack` and inside pack we must create a "package". A package is a folder that contains several plugins. It must have this structure.
+
+```
+package-folder
+├── opt
+│   ├── [plugin 1]
+│   └── [plugin 2]
+└── start
+    ├── [plugin 3]
+    └── [plugin 4]
+```
+
+Plugins in the `opt` folder will only be loaded if we execute the command `packadd`. The plugins in `start` will be loaded automatically during Neovim's startup process.
+
+So let's assume we have this path in our `packpath`.
+
+```
+/home/dev/.local/share/nvim/site
+```
+
+To install plugins there create a `pack` folder. Then create a folder with any name you want. Let's name the package `github` because why not? So the full path for our plugins will be this.
+
+```
+/home/dev/.local/share/nvim/site/pack/github
+```
+
+So to install a plugin like [tokyonight](https://github.com/folke/tokyonight.nvim) and have it load automatically, we should place it here.
+
+```
+/home/dev/.local/share/nvim/site/pack/github/start/tokyonight.nvim
+```
+
+That's it. Well... you need to use the plugin but that's another story.
+
+To know more about packages in Neovim read the help page.
+
+```vim
+:help packages
+```
+
