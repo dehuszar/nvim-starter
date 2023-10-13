@@ -97,7 +97,7 @@ function s.go_to_file(index)
 end
 
 function s.load_content(path)
-  if M.window then
+  if vim.tbl_get(M, 'window', 'winid') then
     M.window.unmount()
     s.filepath = nil
   end
@@ -107,7 +107,7 @@ function s.load_content(path)
     s.cmd('read', path)
     vim.api.nvim_buf_set_lines(window.bufnr, 0, 1, false, {})
     s.filepath = path
-    M.window.modified(false)
+    window.modified(false)
   end)
 
   M.window = window
@@ -149,7 +149,7 @@ function s.create_window()
     local id = s.open_float(buf_id)
 
     M.window.winid = id
-    vim.api.nvim_buf_call(M.window.bufnr, function()
+    vim.api.nvim_buf_call(buf_id, function()
       vim.api.nvim_win_set_option(id, 'number', true)
       vim.api.nvim_win_set_option(id, 'cursorline', cursorline)
     end)
@@ -163,7 +163,7 @@ function s.create_window()
   end
 
   local modified = function(arg)
-    vim.api.nvim_buf_set_option(M.window.bufnr, 'modified', arg)
+    vim.api.nvim_buf_set_option(buf_id, 'modified', arg)
   end
 
   return {
@@ -203,7 +203,9 @@ function s.open_float(bufnr)
 end
 
 function s.write_file(ev)
-  M.window.modified(false)
+  if M.window then
+    M.window.modified(false)
+  end
 
   local same_name = ev.file == buf_name
   if not same_name then
@@ -235,6 +237,10 @@ function s.write_file(ev)
 end
 
 function s.close_window()
+  if M.window == nil then
+    return
+  end
+
   local id = M.window.winid
 
   if id == nil or not vim.api.nvim_win_is_valid(id) then
