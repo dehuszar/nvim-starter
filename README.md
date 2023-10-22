@@ -87,49 +87,19 @@ Leader key: `Space`.
 
 ## How to install third-party plugins?
 
-Turns out we only need to download them in a specific folder and Neovim will take care of the rest. We can list all the available directories using this command.
+Turns out we only need to download them in a specific folder and Neovim will take care of the rest. So, inside this configuration there is a command called `GitPlugin`, this can help you download plugins from github. All you need to know is the name of the author and the name of the repository.
+
+Let's say you want to download a nice colorscheme like [tokyonight](https://github.com/folke/tokyonight.nvim), you can execute this command.
 
 ```vim
-:lua vim.tbl_map(print, vim.opt.packpath:get())
+:GitPlugin install folke/tokyonight.nvim
 ```
 
-In one of those directories we have to create a folder called `pack` and inside pack we must create a "package". A package is a folder that contains several plugins. It must have this structure.
+The command `GitPlugin` can also be used to update or remove plugins. See help page `:help git-plugin.txt` to know more about it.
 
-```
-package-folder
-├── opt
-│   ├── [plugin 1]
-│   └── [plugin 2]
-└── start
-    ├── [plugin 3]
-    └── [plugin 4]
-```
-
-Plugins in the `opt` folder will only be loaded if we execute the command `packadd`. The plugins in `start` will be loaded automatically during Neovim's startup process.
-
-So let's assume we have this path in our `packpath`.
-
-```
-/home/dev/.local/share/nvim/site
-```
-
-To install plugins there create a `pack` folder. Then create a folder with any name you want. Let's name the package `github` because why not? So the full path for our plugins will be this.
-
-```
-/home/dev/.local/share/nvim/site/pack/github
-```
-
-So to install a plugin like [tokyonight](https://github.com/folke/tokyonight.nvim) and have it load automatically, we should place it here.
-
-```
-/home/dev/.local/share/nvim/site/pack/github/start/tokyonight.nvim
-```
-
-That's it. Well... you need to use the plugin but that's another story.
-
-To know more about packages in Neovim read the help page.
+Note `GitPlugin` is not meant to be a fully-featured plugin manager. But you can use it to download one, say [paq-nvim](https://github.com/savq/paq-nvim).
 
 ```vim
-:help packages
+:GitPlugin install savq/paq-nvim package=paqs
 ```
 
