@@ -29,6 +29,12 @@ git clone --branch xx-user-plugins https://github.com/VonHeikemen/nvim-starter /
 
 > Do not execute this command as is. Replace `/tmp/nvim-config-path` with the correct path from the previous step.
 
+* Open Neovim and generate the help tags for the user plugins. Use this command.
+
+```vim
+:helptags ALL
+```
+
 ## Custom keybindings
 
 Leader key: `Space`.
