@@ -4,8 +4,6 @@ Neovim configuration without third party plugins.
 
 What's included here? A custom colorscheme, statusline, tabline, lsp client config, session helper, terminal toggle, completion config, and file navigation helper.
 
-Note: I will move this to its own repository at some point, 'cause it turns out I have use case for this config.
-
 ## Requirements
 
 * Neovim v0.7 or greater.
