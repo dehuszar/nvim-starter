@@ -1,0 +1,42 @@
+==============================================================================
+                                                            *comment-line.txt*
+
+Toggle comment in the current line or selection.
+
+This plugin uses the buffer local option |'commentstring'| to determine how to
+comment the code.
+
+==============================================================================
+Quickstart                                           *comment-line-quickstart*
+
+I recommend creating two separate keymaps. One for normal mode and one for
+visual mode. This way your keymap for normal can be repeated using the `.`
+operator.
+>lua
+  vim.keymap.set('n', 'gc', function()
+    return require('user.comment-line').toggle_op()
+  end, {expr = true, desc = 'Toggle comment'})
+
+  vim.keymap.set('x', 'gc', function()
+    require('user.comment-line').toggle()
+  end, {desc = 'Toggle comment in selection'})
+<
+==============================================================================
+Lua API                                                     *comment-line-api*
+
+                                                       *comment-line.toggle()*
+.toggle(): ~
+    Toggle comment in the current line or selection. Uses the
+    |'commentstring'| option to comment the current line if needed.
+
+                                                    *comment-line.toggle_op()*
+.toggle_op(): ~
+    Same as `.toggle()` but returns expression that makes the operation
+    dot-repeatable.
+
+    It only supports dot-repeat in normal mode.
+
+==============================================================================
+
+vim:tw=78:ft=help:norl
+

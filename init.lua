@@ -99,6 +99,16 @@ vim.keymap.set('n', '<leader>E', '<cmd>Lexplore %:p:h<CR>')
 -- See: plugin/snippets.vim
 vim.keymap.set('i', '<C-d>', '@<C-]>')
 
+-- Toggle comment in current line
+vim.keymap.set('n', 'gc', function()
+  return require('user.comment-line').toggle_op()
+end, {expr = true})
+
+-- Toggle comment in current selection
+vim.keymap.set('x', 'gc', function()
+  require('user.comment-line').toggle()
+end)
+
 require('user.lsp-client').on_attach(function(client, bufnr)
   local bufmap = function(mode, lhs, rhs)
     vim.keymap.set(mode, lhs, rhs, {buffer = bufnr})

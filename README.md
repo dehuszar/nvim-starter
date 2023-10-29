@@ -76,6 +76,8 @@ Leader key: `Space`.
 | Normal | `<Alt-2>` | Navigate to the file in the second line of the buffer menu. |
 | Normal | `<Alt-3>` | Navigate to the file in the third line of the buffer menu. |
 | Normal | `<Alt-4>` | Navigate to the file in the fourth line of the buffer menu. |
+| Normal | `gc` | Toggle comment in current line. |
+| Visual | `gc` | Toggle comment in current selection. |
 
 ### Autocomplete keybindings
 
