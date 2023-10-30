@@ -3,6 +3,9 @@ local s = {}
 local block_comment = '%s%s%s%s'
 local line_comment = '%s%s%s'
 
+s.with_range = {'v', 'V', '\22', '\22s', 's', 'S'}
+s.not_supported = {'o', 'c', 'cv', 'ce', '!', 't'}
+
 if _G._user_comment_line == nil then
   _G._user_comment_line = function() M.toggle() end
 end
@@ -23,30 +26,32 @@ function M.toggle()
     return
   end
 
-  local mode = vim.api.nvim_get_mode().mode
-  local is_visual = vim.tbl_contains({'v', 'V', '\22'}, mode)
   local range
+  local mode = vim.api.nvim_get_mode().mode
 
-  if is_visual then
+  if vim.tbl_contains(s.with_range, mode) then
     local b = vim.fn.getpos('v')
     local e = vim.fn.getpos('.')
     range = {start = b[2], ends = e[2]}
-  elseif mode == 'n' then
+  elseif vim.tbl_contains(s.not_supported, mode) then
+    vim.notify('[comment-line] Current mode is not supported', vim.log.levels.WARN)
+    return
+  else
     local lnum = vim.fn.line('.')
     range = {start = lnum, ends = lnum}
   end
 
   local l, r = cs:match('^%s*(.*)%%s(.-)%s*$')
-
-  local lines = vim.api.nvim_buf_get_lines(0, range.start - 1, range.ends, true)
   local input = {left = l, right = vim.trim(r) == '' and '' or r}
 
   local new = {}
   local uncomment
   local first_indent
 
+  local lines = vim.api.nvim_buf_get_lines(0, range.start - 1, range.ends, true)
+
   for _, line in ipairs(lines) do
-    if #vim.trim(line) > 1 then
+    if #vim.trim(line) >= 1 then
       uncomment = s.is_comment(input, line)
       first_indent = {line:find('^(%s*)')}
       break
