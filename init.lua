@@ -88,13 +88,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 local lspconfig = require('lspconfig')
-local lsp_defaults = lspconfig.util.default_config
-
-lsp_defaults.capabilities = vim.tbl_deep_extend(
-  'force',
-  lsp_defaults.capabilities,
-  require('cmp_nvim_lsp').default_capabilities()
-)
+local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 require('mason').setup({})
 require('mason-lspconfig').setup({
@@ -106,10 +100,13 @@ require('mason-lspconfig').setup({
   },
   handlers = {
     function(server)
-      lspconfig[server].setup({})
+      lspconfig[server].setup({
+        capabilities = lsp_capabilities,
+      })
     end,
     ['tsserver'] = function()
       lspconfig.tsserver.setup({
+        capabilities = lsp_capabilities,
         settings = {
           completions = {
             completeFunctionCalls = true
