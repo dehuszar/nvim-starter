@@ -91,16 +91,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 local lspconfig = require('lspconfig')
-local lsp_defaults = lspconfig.util.default_config
+local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-lsp_defaults.capabilities = vim.tbl_deep_extend(
-  'force',
-  lsp_defaults.capabilities,
-  require('cmp_nvim_lsp').default_capabilities()
-)
-
-lspconfig.html.setup({})
-lspconfig.cssls.setup({})
-lspconfig.eslint.setup({})
-lspconfig.tsserver.setup({})
+lspconfig.html.setup({capabilities = lsp_capabilities,})
+lspconfig.cssls.setup({capabilities = lsp_capabilities,})
+lspconfig.eslint.setup({capabilities = lsp_capabilities,})
+lspconfig.tsserver.setup({capabilities = lsp_capabilities,})
 
