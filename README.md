@@ -150,4 +150,3 @@ Leader key: `Space`.
 | [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) | nvim-cmp source. Show suggestions based on LSP servers queries. |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) | Snippet engine. |
 | [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | Collection of snippets. |
-
