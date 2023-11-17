@@ -58,6 +58,13 @@ function Plugin.config()
     callback = user.on_attach
   })
 
+	vim.api.nvim_create_autocmd({"BufWritePre"}, {
+		pattern = {"*.tf", "*.tfvars"},
+		callback = function()
+			vim.lsp.buf.format()
+		end
+	})
+
   -- See :help mason-lspconfig-settings
   require('mason-lspconfig').setup({
     ensure_installed = {
@@ -66,6 +73,7 @@ function Plugin.config()
       'html',
       'cssls',
       'lua_ls',
+			'terraformls',
     },
     handlers = {
       -- See :help mason-lspconfig-dynamic-server-setup
@@ -85,6 +93,12 @@ function Plugin.config()
           }
         })
       end,
+			['terraformls'] = function ()
+				lspconfig.terraformls.setup({
+					on_attach = user.on_attach,
+					capabilities = lsp_capabilities
+				})
+			end,
       ['lua_ls'] = function()
         require('plugins.lsp.lua_ls')
       end
