@@ -1,14 +1,14 @@
-local Plugin = {'neovim/nvim-lspconfig'}
+local Plugin = { 'neovim/nvim-lspconfig' }
 local user = {}
 
-Plugin.dependencies =  {
-  {'hrsh7th/cmp-nvim-lsp'},
-  {'williamboman/mason-lspconfig.nvim'},
+Plugin.dependencies = {
+  { 'hrsh7th/cmp-nvim-lsp' },
+  { 'williamboman/mason-lspconfig.nvim' },
 }
 
-Plugin.cmd = {'LspInfo', 'LspInstall', 'LspUnInstall'}
+Plugin.cmd = { 'LspInfo', 'LspInstall', 'LspUnInstall' }
 
-Plugin.event = {'BufReadPre', 'BufNewFile'}
+Plugin.event = { 'BufReadPre', 'BufNewFile' }
 
 function Plugin.init()
   local sign = function(opts)
@@ -20,10 +20,10 @@ function Plugin.init()
     })
   end
 
-  sign({name = 'DiagnosticSignError', text = '✘'})
-  sign({name = 'DiagnosticSignWarn', text = '▲'})
-  sign({name = 'DiagnosticSignHint', text = '⚑'})
-  sign({name = 'DiagnosticSignInfo', text = '»'})
+  sign({ name = 'DiagnosticSignError', text = '✘' })
+  sign({ name = 'DiagnosticSignWarn', text = '▲' })
+  sign({ name = 'DiagnosticSignHint', text = '⚑' })
+  sign({ name = 'DiagnosticSignInfo', text = '»' })
 
   -- See :help vim.diagnostic.config()
   vim.diagnostic.config({
@@ -37,12 +37,12 @@ function Plugin.init()
 
   vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
     vim.lsp.handlers.hover,
-    {border = 'rounded'}
+    { border = 'rounded' }
   )
 
   vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
     vim.lsp.handlers.signature_help,
-    {border = 'rounded'}
+    { border = 'rounded' }
   )
 end
 
@@ -50,7 +50,7 @@ function Plugin.config()
   local lspconfig = require('lspconfig')
   local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-  local group = vim.api.nvim_create_augroup('lsp_cmds', {clear = true})
+  local group = vim.api.nvim_create_augroup('lsp_cmds', { clear = true })
 
   vim.api.nvim_create_autocmd('LspAttach', {
     group = group,
@@ -58,22 +58,21 @@ function Plugin.config()
     callback = user.on_attach
   })
 
-	vim.api.nvim_create_autocmd({"BufWritePre"}, {
-		pattern = {"*.tf", "*.tfvars"},
-		callback = function()
-			vim.lsp.buf.format()
-		end
-	})
+  vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+    pattern = { "*.tf", "*.tfvars" },
+    callback = function()
+      vim.lsp.buf.format()
+    end
+  })
 
   -- See :help mason-lspconfig-settings
   require('mason-lspconfig').setup({
     ensure_installed = {
       'eslint',
-      'tsserver',
       'html',
       'cssls',
       'lua_ls',
-			'terraformls',
+      'terraformls',
     },
     handlers = {
       -- See :help mason-lspconfig-dynamic-server-setup
@@ -83,22 +82,12 @@ function Plugin.config()
           capabilities = lsp_capabilities,
         })
       end,
-      ['tsserver'] = function()
-        lspconfig.tsserver.setup({
-          capabilities = lsp_capabilities,
-          settings = {
-            completions = {
-              completeFunctionCalls = true
-            }
-          }
+      ['terraformls'] = function()
+        lspconfig.terraformls.setup({
+          on_attach = user.on_attach,
+          capabilities = lsp_capabilities
         })
       end,
-			['terraformls'] = function ()
-				lspconfig.terraformls.setup({
-					on_attach = user.on_attach,
-					capabilities = lsp_capabilities
-				})
-			end,
       ['lua_ls'] = function()
         require('plugins.lsp.lua_ls')
       end
@@ -108,7 +97,7 @@ end
 
 function user.on_attach()
   local bufmap = function(mode, lhs, rhs)
-    local opts = {buffer = true}
+    local opts = { buffer = true }
     vim.keymap.set(mode, lhs, rhs, opts)
   end
 
@@ -123,7 +112,7 @@ function user.on_attach()
   bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
   bufmap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
   bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
-  bufmap({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>')
+  bufmap({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>')
   bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
   bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
   bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
@@ -131,4 +120,3 @@ function user.on_attach()
 end
 
 return Plugin
-
